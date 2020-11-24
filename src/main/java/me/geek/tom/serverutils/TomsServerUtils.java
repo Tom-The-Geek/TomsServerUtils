@@ -6,10 +6,8 @@ import me.geek.tom.serverutils.ducks.IPlayerAccessor;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,8 +47,7 @@ public class TomsServerUtils implements ModInitializer {
         connection.onPlayerLeave(player);
     }
 
-    public static void chat(ServerPlayNetworkHandler netHandler, ChatMessageC2SPacket packet) {
-        String message = StringUtils.normalizeSpace(packet.getChatMessage());
+    public static void chat(ServerPlayNetworkHandler netHandler, String message) {
         ServerPlayerEntity player = netHandler.player;
         boolean showHat = ((IPlayerAccessor) player).serverutils_showHat();
         connection.onChatMessage(player.getGameProfile(), showHat, message);
