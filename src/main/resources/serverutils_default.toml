@@ -1,0 +1,20 @@
+[general]
+    # Set to "DISCORD" after configuring the discordBot section below
+    mode = "NONE"
+
+[discordBot]
+    # Create a app at https://discord.com/developers/applications, add a bot and then copy the token here
+    token = ""
+    # The Discord webhook URL to send the Minecraft chat to
+    webhook = ""
+    # The ID of the channel to listen for messages to send to Minecraft.
+    messageChannel = ""
+
+    # The icon to use for server messages (join, leave, etc)
+    # Default is a grass block icon.
+    serverIcon = "https://static.wikia.nocookie.net/minecraft_gamepedia/images/9/93/Grass_Block_JE7_BE6.png/revision/latest?cb=20200830143209&format=original"
+
+[misc]
+    # Change the service used for player avatars.
+    # Will be used like: <profileEndpoint> + <player uuid> + "?overlay=" + <player helmet skin layer active>
+    profileEndpoint = "https://crafatar.com/avatars/"

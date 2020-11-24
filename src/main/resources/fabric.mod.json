@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "toms-server-utils",
+  "version": "${version}",
+  "name": "TomsServerUtils",
+  "description": "Generic utilities for fabric-based servers",
+  "authors": [
+    "Tom_The_Geek"
+  ],
+  "contributors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/fabulous-server-utils/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.geek.tom.serverutils.TomsServerUtils"
+    ],
+    "client": [],
+    "server": []
+  },
+  "mixins": [
+    "serverutils.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "fabric": "*"
+  }
+}

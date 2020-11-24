@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "me.geek.tom.serverutils.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinPlayerEntity",
+    "MixinPlayerManager",
+    "MixinServerPlayNetHandler"
+  ],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
