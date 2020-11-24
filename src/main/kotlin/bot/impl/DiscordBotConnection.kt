@@ -88,7 +88,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                         .setDescription("")
                         .setAuthor(WebhookEmbed.EmbedAuthor("${player.gameProfile.name} joined the game!", avatarUrl, ""))
                         .build())
-                .build()0
+                .build()
         this.webhookClient!!.send(webhookMessage)
     }
 
