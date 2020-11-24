@@ -9,7 +9,13 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
-version = project.mod_version
+def ENV = System.getenv()
+def build = "local"
+if (ENV.BUILD_NUMBER) {
+	build = ENV.BUILD_NUMBER
+}
+
+version = project.mod_version + "+build." + build
 group = project.maven_group
 
 minecraft {
