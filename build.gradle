@@ -66,11 +66,16 @@ dependencies {
 //	shade('com.vdurmont:emoji-java:5.1.1')
 
 //	shade 'net.kyori:adventure-text-serializer-gson:4.1.1'
-	shade "dev.vankka:MCDiscordReserializer:4.0.0"
-	shade "dev.vankka:SimpleAST:2.2.4-SNAPSHOT"
-	modImplementation "net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT"
-	include "net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT"
+	shade 'dev.vankka:MCDiscordReserializer:4.0.0'
+	shade 'dev.vankka:SimpleAST:2.2.4-SNAPSHOT'
+	modImplementation 'net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT'
+	include 'net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT'
 	include 'ca.stellardrift:colonel:0.1'
+	include 'net.kyori:adventure-api:4.2.0'
+	include 'net.kyori:adventure-platform-api:4.0.0-SNAPSHOT'
+	include 'net.kyori:adventure-text-feature-pagination:4.0.0-SNAPSHOT'
+	include 'net.kyori:adventure-text-serializer-gson:4.2.0'
+	include 'net.kyori:adventure-text-serializer-plain:4.2.0'
 
 	shade "club.minnced:discord-webhooks:${project.webhooks_version}"
 	shade "com.uchuhimo:konf-toml:${project.konf_version}"
@@ -114,6 +119,7 @@ shadowJar {
 	exclude("kotlin/**", 'kotlinx/**', 'javax/**', "META-INF")
 	exclude 'org/checkerframework/**', 'org/jetbrains/**', 'org/intellij/**'
 	exclude 'com/google/gson/**'
+	exclude 'net/kyori/**'
 
 	def relocPath = 'me.geek.tom.serverutils.libs.'
 	relocate 'com.iwebpp.crypto', relocPath + 'com.iwebpp.crypto'
@@ -132,9 +138,6 @@ shadowJar {
 	relocate 'com.moandjiezana.toml', relocPath + 'com.moandjiezana.toml'
 	relocate 'dev.vankka', relocPath + 'dev.vankka'
 	relocate 'org.reflections', relocPath + 'org.reflections'
-	relocate('net.kyori', relocPath + 'net.kyori') {
-		exclude 'net.kyori.adventure.platform.fabric.*'
-	}
 	relocate 'gnu.trove', relocPath + 'gnu.trove'
 	relocate 'javassist', relocPath + 'javassist'
 }
@@ -142,6 +145,7 @@ shadowJar {
 remapJar {
 	dependsOn(shadowJar)
     input.set(shadowJar.archivePath)
+
 }
 
 // configure the maven publication

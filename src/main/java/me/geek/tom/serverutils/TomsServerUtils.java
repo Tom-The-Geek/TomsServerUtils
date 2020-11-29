@@ -6,6 +6,7 @@ import me.geek.tom.serverutils.ducks.IPlayerAccessor;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.LogManager;
@@ -34,9 +35,24 @@ public class TomsServerUtils implements ModInitializer {
         LOGGER.info("Initializing");
         config = loadConfig(FabricLoader.getInstance().getConfigDir());
         connection = loadBot(config);
+    }
 
-        ServerLifecycleEvents.SERVER_STARTED.register(connection::connect);
-        ServerLifecycleEvents.SERVER_STOPPING.register(server -> connection.disconnect());
+    public static void starting(MinecraftServer server) {
+        connection.connect(server);
+        connection.serverStarting(server);
+    }
+
+    public static void started(MinecraftServer server) {
+        connection.serverStarted(server);
+    }
+
+    public static void stopping(MinecraftServer server) {
+        connection.serverStopping(server);
+    }
+
+    public static void stopped(MinecraftServer server) {
+        connection.serverStopped(server);
+        connection.disconnect();
     }
 
     public static void join(ServerPlayerEntity player) {

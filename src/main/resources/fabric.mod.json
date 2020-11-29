@@ -23,7 +23,6 @@
     "serverutils.mixins.json"
   ],
   "depends": {
-    "fabricloader": "*",
-    "fabric": "*"
+    "fabricloader": "*"
   }
 }

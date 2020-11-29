@@ -8,12 +8,18 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import org.apache.logging.log4j.LogManager
 
-private val LOGGER = LogManager.getLogger()
+//private val LOGGER = LogManager.getLogger()
 
 interface BotConnection {
 
     fun connect(server: MinecraftServer)
     fun disconnect()
+
+    fun serverStarting(server: MinecraftServer)
+    fun serverStarted(server: MinecraftServer)
+    fun serverStopping(server: MinecraftServer)
+    fun serverStopped(server: MinecraftServer)
+
     fun onChatMessage(user: GameProfile, headOverlay: Boolean, message: String)
     fun onPlayerLeave(player: ServerPlayerEntity)
     fun onPlayerJoin(player: ServerPlayerEntity)
@@ -21,15 +27,13 @@ interface BotConnection {
 }
 
 class NoopBotConnection : BotConnection {
-    override fun connect(server: MinecraftServer) {
-        LOGGER.info("Connect")
-    }
-    override fun disconnect() {
-        LOGGER.info("Disconnect")
-    }
-    override fun onChatMessage(user: GameProfile, headOverlay: Boolean, message: String) {
-        LOGGER.info("Chat: ${user.name} $message")
-    }
+    override fun connect(server: MinecraftServer) { }
+    override fun disconnect() { }
+    override fun serverStarting(server: MinecraftServer) { }
+    override fun serverStarted(server: MinecraftServer) { }
+    override fun serverStopping(server: MinecraftServer) { }
+    override fun serverStopped(server: MinecraftServer) { }
+    override fun onChatMessage(user: GameProfile, headOverlay: Boolean, message: String) { }
     override fun onPlayerLeave(player: ServerPlayerEntity) { }
     override fun onPlayerJoin(player: ServerPlayerEntity) { }
 }

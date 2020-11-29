@@ -5,7 +5,8 @@
   "mixins": [
     "MixinPlayerEntity",
     "MixinPlayerManager",
-    "MixinServerPlayNetHandler"
+    "MixinServerPlayNetHandler",
+    "MixinMinecraftServer"
   ],
   "client": [],
   "server": [],

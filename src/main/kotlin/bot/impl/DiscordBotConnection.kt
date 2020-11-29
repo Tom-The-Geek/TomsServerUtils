@@ -30,14 +30,14 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
 
     private var jda: JDA? = null
     private var webhookClient: WebhookClient? = null
-    private var playerManager: PlayerManager? = null
+    private var server: MinecraftServer? = null
 
     override fun connect(server: MinecraftServer) {
         this.jda = JDABuilder.createDefault(this.config[DiscordBotSpec.token])
                 .addEventListeners(this)
                 .build()
         this.webhookClient = WebhookClient.withUrl(this.config[DiscordBotSpec.webhook])
-        this.playerManager = server.playerManager
+        this.server = server
     }
 
     override fun disconnect() {
@@ -49,9 +49,61 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
             webhookClient!!.close()
             webhookClient = null
         }
-        if (this.playerManager != null) {
-            this.playerManager = null
+        if (this.server != null) {
+            this.server = null
         }
+    }
+
+    override fun serverStarting(server: MinecraftServer) {
+        val webhookMessage = WebhookMessageBuilder()
+                .setUsername("Server")
+                .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
+                .addEmbeds(WebhookEmbedBuilder()
+                        .setColor(0x00FF00)
+                        .setAuthor(WebhookEmbed.EmbedAuthor("Server starting...", "", ""))
+                        .setDescription("")
+                        .build())
+                .build()
+        this.webhookClient!!.send(webhookMessage)
+    }
+
+    override fun serverStarted(server: MinecraftServer) {
+        val webhookMessage = WebhookMessageBuilder()
+                .setUsername("Server")
+                .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
+                .addEmbeds(WebhookEmbedBuilder()
+                        .setColor(0x00FF00)
+                        .setAuthor(WebhookEmbed.EmbedAuthor("Server started!", "", ""))
+                        .setDescription("")
+                        .build())
+                .build()
+        this.webhookClient!!.send(webhookMessage)
+    }
+
+    override fun serverStopping(server: MinecraftServer) {
+        val webhookMessage = WebhookMessageBuilder()
+                .setUsername("Server")
+                .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
+                .addEmbeds(WebhookEmbedBuilder()
+                        .setColor(0xFF0000)
+                        .setAuthor(WebhookEmbed.EmbedAuthor("Server stopping...", "", ""))
+                        .setDescription("")
+                        .build())
+                .build()
+        this.webhookClient!!.send(webhookMessage)
+    }
+
+    override fun serverStopped(server: MinecraftServer) {
+        val webhookMessage = WebhookMessageBuilder()
+                .setUsername("Server")
+                .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
+                .addEmbeds(WebhookEmbedBuilder()
+                        .setColor(0xFF0000)
+                        .setAuthor(WebhookEmbed.EmbedAuthor("Server stopped!", "", ""))
+                        .setDescription("")
+                        .build())
+                .build()
+        this.webhookClient!!.send(webhookMessage)
     }
 
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
@@ -60,9 +112,9 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
         val message = MinecraftSerializer.INSTANCE.serialize(event.message.contentRaw)
         val username = Component.text(event.member?.nickname?: event.author.name)
                 .color(TextColor.color(event.member?.colorRaw?: 0xFFFFFF))
-        val minecraftMessage = FabricServerAudiences.of(this.playerManager!!.server).toNative(
+        val minecraftMessage = FabricServerAudiences.of(this.server!!).toNative(
                 Component.join(Component.text(": "), username, (message)))
-        this.playerManager!!.broadcastChatMessage(minecraftMessage, MessageType.CHAT, Util.NIL_UUID)
+        this.server?.playerManager?.broadcastChatMessage(minecraftMessage, MessageType.CHAT, Util.NIL_UUID)
     }
 
     override fun onChatMessage(user: GameProfile, headOverlay: Boolean, message: String) {
