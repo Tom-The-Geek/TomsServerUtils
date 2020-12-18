@@ -3,6 +3,7 @@ plugins {
 	id 'maven-publish'
 	id "org.jetbrains.kotlin.jvm" version "1.4.10"
 	id 'com.github.johnrengelman.shadow' version '6.1.0'
+	id "com.modrinth.minotaur" version "1.1.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -17,6 +18,8 @@ if (ENV.BUILD_NUMBER) {
 
 version = project.mod_version + "+build." + build
 group = project.maven_group
+
+import com.modrinth.minotaur.TaskModrinthUpload
 
 minecraft {
 }
@@ -145,7 +148,15 @@ shadowJar {
 remapJar {
 	dependsOn(shadowJar)
     input.set(shadowJar.archivePath)
+}
 
+task publishModrinth(type: TaskModrinthUpload, dependsOn: remapJar) {
+	token = ENV["MODRINTH_TOKEN"]
+	projectId = 'ssUbhMkL'
+	versionNumber = project.version
+	uploadFile = remapJar // This is the java jar task
+	addGameVersion('1.16.4')
+	addLoader('fabric')
 }
 
 // configure the maven publication
