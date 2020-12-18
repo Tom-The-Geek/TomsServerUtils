@@ -4,6 +4,7 @@ import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.ConfigSpec
 import com.uchuhimo.konf.source.toml
 import me.geek.tom.serverutils.bot.BotType
+import me.geek.tom.serverutils.crashreports.CrashReportHelper
 import org.apache.commons.io.FileUtils
 import java.nio.file.Path
 
@@ -19,7 +20,15 @@ object MiscSpec : ConfigSpec() {
 }
 
 object GeneralSpec : ConfigSpec() {
+    val crashReportsEnabled by required<Boolean>()
     val mode by required<BotType>()
+}
+
+object CrashReportSpec : ConfigSpec() {
+    val webhook by required<String>()
+    val webhookIcon by required<String>()
+    val webhookName by required<String>()
+    val serverName by required<String>()
 }
 
 fun loadConfig(configDir: Path): Config {
@@ -31,8 +40,21 @@ fun loadConfig(configDir: Path): Config {
 
     return Config {
         addSpec(DiscordBotSpec)
+        addSpec(CrashReportSpec)
         addSpec(MiscSpec)
         addSpec(GeneralSpec) }
             .from.toml.resource("serverutils_default.toml")
             .from.toml.file(configFile)
+}
+
+fun loadCrashHelper(config: Config): CrashReportHelper {
+    if (!config[GeneralSpec.crashReportsEnabled]) {
+        return CrashReportHelper.Noop()
+    }
+    return CrashReportHelper.Impl(
+            config[CrashReportSpec.webhook],
+            config[CrashReportSpec.webhookName],
+            config[CrashReportSpec.webhookIcon],
+            config[CrashReportSpec.serverName]
+    )
 }

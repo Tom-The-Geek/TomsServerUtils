@@ -2,18 +2,30 @@ package me.geek.tom.serverutils;
 
 import com.uchuhimo.konf.Config;
 import me.geek.tom.serverutils.bot.BotConnection;
+import me.geek.tom.serverutils.crashreports.CrashReportHelper;
 import me.geek.tom.serverutils.ducks.IPlayerAccessor;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.crash.CrashException;
+import net.minecraft.util.crash.CrashReport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+
+import static com.mojang.brigadier.arguments.BoolArgumentType.bool;
+import static com.mojang.brigadier.arguments.BoolArgumentType.getBool;
 import static me.geek.tom.serverutils.ConfigKt.loadConfig;
+import static me.geek.tom.serverutils.ConfigKt.loadCrashHelper;
 import static me.geek.tom.serverutils.bot.BotConnectionKt.loadBot;
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
 public class TomsServerUtils implements ModInitializer {
 
@@ -29,12 +41,39 @@ public class TomsServerUtils implements ModInitializer {
 
     private static Config config;
     private static BotConnection connection;
+    private static CrashReportHelper crashHelper;
+
+    public static boolean debugCommandSaveReport = true;
 
     @Override
     public void onInitialize() {
         LOGGER.info("Initializing");
         config = loadConfig(FabricLoader.getInstance().getConfigDir());
         connection = loadBot(config);
+        crashHelper = loadCrashHelper(config);
+
+        // Only register the test crash commands in development. It should be obvious why we do this.
+        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+                if (dedicated) {
+                    dispatcher.register(
+                            literal("testcrash")
+                                    .requires(s -> s.hasPermissionLevel(4))
+                                    .then(argument("save_report", bool()).executes(ctx -> {
+                                        ctx.getSource().sendFeedback(new LiteralText("cya later!"), false);
+                                        debugCommandSaveReport = getBool(ctx, "save_report");
+                                        throw new Error("Debug crash!");
+                                    }))
+                    );
+                }
+            });
+        }
+    }
+
+    public static void crashed(CrashReport report, boolean saved, File file) {
+        crashHelper.handleCrashReport(report, saved &&
+                        (!FabricLoader.getInstance().isDevelopmentEnvironment() || debugCommandSaveReport), // allow spoof a failed save for testing.
+                file);
     }
 
     public static void starting(MinecraftServer server) {

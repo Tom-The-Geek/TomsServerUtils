@@ -6,7 +6,8 @@
     "MixinPlayerEntity",
     "MixinPlayerManager",
     "MixinServerPlayNetHandler",
-    "MixinMinecraftServer"
+    "MixinMinecraftServer",
+    "MixinCrashReport"
   ],
   "client": [],
   "server": [],
