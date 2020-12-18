@@ -152,7 +152,7 @@ remapJar {
 
 task publishModrinth(type: TaskModrinthUpload, dependsOn: remapJar) {
 	token = ENV["MODRINTH_TOKEN"]
-	projectId = 'ssUbhMkL'
+	projectId = 'ul4zTWk4'
 	versionNumber = project.version
 	uploadFile = remapJar // This is the java jar task
 	addGameVersion('1.16.4')
