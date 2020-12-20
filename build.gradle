@@ -165,6 +165,7 @@ task publishModrinth(type: TaskModrinthUpload, dependsOn: remapJar) {
 	uploadFile = remapJar // This is the java jar task
 	addGameVersion('1.16.4')
 	addLoader('fabric')
+	changelog = ENV["GIT_CHANGELOG"]
 }
 
 // configure the maven publication
