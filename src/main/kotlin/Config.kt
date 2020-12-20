@@ -51,7 +51,7 @@ fun loadConfig(configDir: Path): Config {
         addSpec(MiscSpec)
         addSpec(GeneralSpec) }
             .from.toml.resource("serverutils_default.toml")
-            .from.toml.watchFile(configFile)
+            .from.toml.file(configFile)
 }
 
 class HomesConfig(
