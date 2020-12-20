@@ -48,10 +48,13 @@ repositories {
 		name = 'sonatype-oss'
 		url = 'https://oss.sonatype.org/content/repositories/snapshots/'
 	}
+    maven {
+        name = "Ladysnake Libs"
+        url = 'https://dl.bintray.com/ladysnake/libs'
+    }
 }
 
 dependencies {
-	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
@@ -66,9 +69,14 @@ dependencies {
 		exclude module: 'opus-java'
 	}
 
+    // Cardinal Components
+    modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cardinal_components_version}"
+    include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cardinal_components_version}"
+    modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cardinal_components_version}"
+    include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cardinal_components_version}"
+
 //	shade('com.vdurmont:emoji-java:5.1.1')
 
-//	shade 'net.kyori:adventure-text-serializer-gson:4.1.1'
 	shade 'dev.vankka:MCDiscordReserializer:4.0.0'
 	shade 'dev.vankka:SimpleAST:2.2.4-SNAPSHOT'
 	modImplementation 'net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT'

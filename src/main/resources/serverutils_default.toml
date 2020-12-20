@@ -36,3 +36,13 @@
     webhook_icon = "https://static.wikia.nocookie.net/minecraft_gamepedia/images/9/93/Grass_Block_JE7_BE6.png/revision/latest?cb=20200830143209&format=original"
     # The name of the server to use in messages
     server_name = "Minecraft server"
+
+# Settings for the /home command
+[homes]
+    # Should the command be enabled
+    enabled = true
+    # Should players be allowed to use homes to travel across dimensions
+    allow_cross_dimension = true
+    # Maximum amount of homes a player can have
+    # Set to -1 for unlimited
+    max_home_amount = 3

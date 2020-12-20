@@ -17,12 +17,20 @@
       "me.geek.tom.serverutils.TomsServerUtils"
     ],
     "client": [],
-    "server": []
+    "server": [],
+    "cardinal-components-entity": [
+      "me.geek.tom.serverutils.Components"
+    ]
   },
   "mixins": [
     "serverutils.mixins.json"
   ],
   "depends": {
     "fabricloader": "*"
+  },
+  "custom": {
+    "cardinal-components": [
+      "toms-server-utils:homes"
+    ]
   }
 }

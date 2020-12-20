@@ -6,7 +6,6 @@ import club.minnced.discord.webhook.send.WebhookEmbedBuilder
 import club.minnced.discord.webhook.send.WebhookMessageBuilder
 import com.mojang.authlib.GameProfile
 import com.uchuhimo.konf.Config
-import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer
 import me.geek.tom.serverutils.DiscordBotSpec
 import me.geek.tom.serverutils.MiscSpec
@@ -16,13 +15,11 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
-import net.kyori.adventure.platform.fabric.FabricAudiences
 import net.kyori.adventure.platform.fabric.FabricServerAudiences
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import net.minecraft.network.MessageType
 import net.minecraft.server.MinecraftServer
-import net.minecraft.server.PlayerManager
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Util
 

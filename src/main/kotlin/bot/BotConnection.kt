@@ -6,7 +6,6 @@ import me.geek.tom.serverutils.GeneralSpec
 import me.geek.tom.serverutils.bot.impl.DiscordBotConnection
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
-import org.apache.logging.log4j.LogManager
 
 //private val LOGGER = LogManager.getLogger()
 

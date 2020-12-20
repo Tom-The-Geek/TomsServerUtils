@@ -2,17 +2,16 @@ package me.geek.tom.serverutils;
 
 import com.uchuhimo.konf.Config;
 import me.geek.tom.serverutils.bot.BotConnection;
+import me.geek.tom.serverutils.commands.HomeCommand;
 import me.geek.tom.serverutils.crashreports.CrashReportHelper;
 import me.geek.tom.serverutils.ducks.IPlayerAccessor;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +31,7 @@ public class TomsServerUtils implements ModInitializer {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static final String MOD_ID = "toms-server-utils";
+    @SuppressWarnings({"unused", "RedundantSuppression"})
     public static final String MOD_NAME = "TomsServerUtils";
 
     /**
@@ -39,16 +39,17 @@ public class TomsServerUtils implements ModInitializer {
      */
     public static final int HAT_DISPLAY_MASK = 1 << 6;
 
-    private static Config config;
     private static BotConnection connection;
     private static CrashReportHelper crashHelper;
+    public static HomesConfig homesConfig;
 
     public static boolean debugCommandSaveReport = true;
 
     @Override
     public void onInitialize() {
         LOGGER.info("Initializing");
-        config = loadConfig(FabricLoader.getInstance().getConfigDir());
+        Config config = loadConfig(FabricLoader.getInstance().getConfigDir());
+        homesConfig = new HomesConfig(config);
         connection = loadBot(config);
         crashHelper = loadCrashHelper(config);
 
@@ -68,6 +69,12 @@ public class TomsServerUtils implements ModInitializer {
                 }
             });
         }
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, __) -> {
+            if (homesConfig.getEnabled()) {
+                HomeCommand.register(dispatcher);
+            }
+        });
     }
 
     public static void crashed(CrashReport report, boolean saved, File file) {

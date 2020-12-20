@@ -45,7 +45,7 @@ interface CrashReportHelper {
                     builder.addFile("crash-report.txt", report.asString().byteInputStream())
                 }
 
-                whClient.send(builder.build())
+                whClient.send(builder.build()).join()
             }
         }
     }

@@ -31,6 +31,12 @@ object CrashReportSpec : ConfigSpec() {
     val serverName by required<String>()
 }
 
+object HomesSpec : ConfigSpec() {
+    val enabled by required<Boolean>()
+    val allowCrossDimension by required<Boolean>()
+    val maxHomeAmount by required<Int>()
+}
+
 fun loadConfig(configDir: Path): Config {
     val configFile = configDir.resolve("serverutils.toml").toFile()
     if (!configFile.exists()) {
@@ -41,10 +47,19 @@ fun loadConfig(configDir: Path): Config {
     return Config {
         addSpec(DiscordBotSpec)
         addSpec(CrashReportSpec)
+        addSpec(HomesSpec)
         addSpec(MiscSpec)
         addSpec(GeneralSpec) }
             .from.toml.resource("serverutils_default.toml")
-            .from.toml.file(configFile)
+            .from.toml.watchFile(configFile)
+}
+
+class HomesConfig(
+        private val config: Config
+) {
+    val enabled get() = config[HomesSpec.enabled]
+    val allowCrossDimension get() = config[HomesSpec.allowCrossDimension]
+    val maxHomeAmount get() = config[HomesSpec.maxHomeAmount]
 }
 
 fun loadCrashHelper(config: Config): CrashReportHelper {
