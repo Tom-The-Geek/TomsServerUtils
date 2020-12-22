@@ -6,6 +6,7 @@ import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
 import me.geek.tom.serverutils.sethome.HomesComponent;
 import me.geek.tom.serverutils.sethome.HomesComponentImpl;
+import nerdhub.cardinal.components.api.util.RespawnCopyStrategy;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,8 +18,7 @@ public class Components implements EntityComponentInitializer {
             new Identifier(MOD_ID, "homes"), HomesComponent.class);
 
     @Override
-    @SuppressWarnings("UnstableApiUsage")
     public void registerEntityComponentFactories(@NotNull EntityComponentFactoryRegistry registry) {
-        registry.registerForPlayers(HOMES, HomesComponentImpl::new);
+        registry.registerForPlayers(HOMES, HomesComponentImpl::new, RespawnCopyStrategy.ALWAYS_COPY);
     }
 }
