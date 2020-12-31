@@ -6,12 +6,17 @@ pipeline {
     WEBHOOK_URL = credentials('discord-webhook')
     WEBHOOK_TITLE = "ServerUtils Build #${BUILD_NUMBER}"
     JENKINS_HEAD = 'https://wiki.jenkins-ci.org/download/attachments/2916393/headshot.png'
-    MODRINTH_TOKEN = credentials('modrinth-token')
     GIT_CHANGELOG = getChanges(currentBuild)
   }
   
   stages {
     stage('Notify-Build-Start') {
+      when {
+        not {
+          changeRequest()
+        }
+      }
+      
       steps {
         discordSend(
           title: "${WEBHOOK_TITLE} Started",
@@ -31,6 +36,16 @@ pipeline {
     }
 
     stage('Modrinth-Publish') {
+      when {
+        not {
+          changeRequest()
+        }
+      }
+      
+      environment {
+        MODRINTH_TOKEN = credentials('modrinth-token')
+      }
+      
       steps {
         sh './gradlew publishModrinth'
       }
