@@ -40,7 +40,7 @@
 # Settings for the /home command
 [homes]
     # Should the command be enabled
-    enabled = true
+    enabled = false
     # Should players be allowed to use homes to travel across dimensions
     allow_cross_dimension = true
     # Maximum amount of homes a player can have
