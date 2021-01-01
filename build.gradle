@@ -14,7 +14,7 @@ def ENV = System.getenv()
 version = project.mod_version + ".local"
 if (ENV.VERSION) {
 	version = ENV.VERSION
-	version = version.substring(version.lastIndexOf("/"))
+	version = version.substring(version.lastIndexOf("/") + 1)
 }
 
 group = project.maven_group

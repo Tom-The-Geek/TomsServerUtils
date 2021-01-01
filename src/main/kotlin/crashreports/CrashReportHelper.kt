@@ -25,12 +25,16 @@ interface CrashReportHelper {
                     false -> "the crash report failed to save!"
                 }
 
+                val message = if (report.causeAsString.length > 1500)
+                    report.causeAsString.substring(0 until 1497) + "..."
+                else report.causeAsString
+
                 val builder = WebhookMessageBuilder()
                         .addEmbeds(WebhookEmbedBuilder()
                                 .setTitle(WebhookEmbed.EmbedTitle("$serverName crashed!", null))
                                 .setDescription("$serverName appears to have crashed and $savedMessage\n" +
                                         "Message:```\n" +
-                                        report.causeAsString +
+                                        message +
                                         "```\n" +
                                         "The full report is attached.")
                                 .setColor(0xFF0000)

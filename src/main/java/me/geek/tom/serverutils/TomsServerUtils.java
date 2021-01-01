@@ -86,9 +86,13 @@ public class TomsServerUtils implements ModInitializer {
     }
 
     public static void crashed(CrashReport report, boolean saved, File file) {
-        crashHelper.handleCrashReport(report, saved &&
-                        (!FabricLoader.getInstance().isDevelopmentEnvironment() || debugCommandSaveReport), // allow spoof a failed save for testing.
-                file);
+        try {
+            crashHelper.handleCrashReport(report, saved &&
+                            (!FabricLoader.getInstance().isDevelopmentEnvironment() || debugCommandSaveReport), // allow spoof a failed save for testing.
+                    file);
+        } catch (Exception e) {
+            LOGGER.error("Failed to send crash report to Discord!", e);
+        }
     }
 
     public static void starting(MinecraftServer server) {
