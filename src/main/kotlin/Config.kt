@@ -62,6 +62,12 @@ class HomesConfig(
     val maxHomeAmount get() = config[HomesSpec.maxHomeAmount]
 }
 
+class ChatFilterConfig(
+    private val config: ConfigSpec
+) {
+
+}
+
 fun loadCrashHelper(config: Config): CrashReportHelper {
     if (!config[GeneralSpec.crashReportsEnabled]) {
         return CrashReportHelper.Noop()

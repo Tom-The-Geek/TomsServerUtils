@@ -54,6 +54,17 @@ repositories {
     }
 }
 
+sourceSets {
+	scriptApi {
+		compileClasspath += main.compileClasspath
+	}
+
+	main {
+		compileClasspath += scriptApi.output
+		runtimeClasspath += scriptApi.output
+	}
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
@@ -90,6 +101,8 @@ dependencies {
 
 	shade "club.minnced:discord-webhooks:${project.webhooks_version}"
 	shade "com.uchuhimo:konf-toml:${project.konf_version}"
+
+	shade "org.mozilla:rhino:1.7.13"
 }
 
 processResources {
@@ -122,9 +135,13 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 jar {
 	from "LICENSE"
+	from sourceSets.main.output, sourceSets.scriptApi.output
 }
 
 shadowJar {
+	from "LICENSE"
+	from sourceSets.main.output, sourceSets.scriptApi.output
+
 	configurations = [ project.configurations.shade, project.configurations.modShade ]
 	classifier = "dev-all"
 	exclude("kotlin/**", 'kotlinx/**', 'javax/**', "META-INF")
@@ -151,6 +168,7 @@ shadowJar {
 	relocate 'org.reflections', relocPath + 'org.reflections'
 	relocate 'gnu.trove', relocPath + 'gnu.trove'
 	relocate 'javassist', relocPath + 'javassist'
+	relocate 'org.mozilla', relocPath + 'org.mozilla'
 }
 
 remapJar {

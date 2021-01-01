@@ -3,7 +3,6 @@ package me.geek.tom.serverutils;
 import com.uchuhimo.konf.Config;
 import me.geek.tom.serverutils.bot.BotConnection;
 import me.geek.tom.serverutils.chatfilter.ChatFilterManager;
-import me.geek.tom.serverutils.chatfilter.filters.BadWordFilter;
 import me.geek.tom.serverutils.commands.HomeCommand;
 import me.geek.tom.serverutils.crashreports.CrashReportHelper;
 import me.geek.tom.serverutils.ducks.IPlayerAccessor;
@@ -22,7 +21,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.util.Arrays;
+import java.nio.file.Path;
+import java.util.List;
 
 import static com.mojang.brigadier.arguments.BoolArgumentType.bool;
 import static com.mojang.brigadier.arguments.BoolArgumentType.getBool;
@@ -49,9 +49,7 @@ public class TomsServerUtils implements ModInitializer {
     private static CrashReportHelper crashHelper;
     public static HomesConfig homesConfig;
 
-    private static ChatFilterManager chatFilterManager = new ChatFilterManager(Arrays.asList(
-            new BadWordFilter()
-    ));
+    private static final ChatFilterManager chatFilterManager = new ChatFilterManager();
 
     public static boolean debugCommandSaveReport = true;
 
@@ -97,7 +95,7 @@ public class TomsServerUtils implements ModInitializer {
         connection.connect(server);
         connection.serverStarting(server);
 
-        chatFilterManager.init(FabricLoader.getInstance().getConfigDir(), server);
+        chatFilterManager.init(FabricLoader.getInstance().getConfigDir().resolve("serverutils"), server);
     }
 
     public static void started(MinecraftServer server) {
@@ -124,12 +122,17 @@ public class TomsServerUtils implements ModInitializer {
     public static boolean chat(ServerPlayNetworkHandler netHandler, String message) {
         ServerPlayerEntity player = netHandler.player;
 
-        boolean ok = chatFilterManager.onChatMessage(message);
+        List<String> failed = chatFilterManager.onChatMessage(message);
+        boolean ok = failed.isEmpty();
 
         if (!ok) {
-            player.sendMessage(new LiteralText("The message you just sent was flagged by an automatic filter" +
+            String failedMessage = String.join(", ", failed);
+
+            player.sendMessage(new LiteralText("The message you just sent was flagged by automatic filters" +
                     " and has not been sent. Try to be careful in future!").formatted(Formatting.RED),
                     MessageType.SYSTEM, Util.NIL_UUID);
+            player.sendMessage(new LiteralText("The filters that failed were: ")
+                    .append(failedMessage).formatted(Formatting.RED), MessageType.SYSTEM, Util.NIL_UUID);
         }
 
         if (ok) {
@@ -137,5 +140,9 @@ public class TomsServerUtils implements ModInitializer {
             connection.onChatMessage(player.getGameProfile(), showHat, message);
         }
         return ok;
+    }
+
+    public static Path getConfigDir() {
+        return FabricLoader.getInstance().getConfigDir().resolve("serverutils");
     }
 }
