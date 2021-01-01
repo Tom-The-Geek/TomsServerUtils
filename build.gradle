@@ -11,12 +11,11 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
 def ENV = System.getenv()
-version = "local"
+version = project.mod_version + ".local"
 if (ENV.VERSION) {
 	version = ENV.VERSION
 }
 
-//version = project.mod_version + "." + version
 group = project.maven_group
 
 import com.modrinth.minotaur.TaskModrinthUpload
