@@ -14,6 +14,7 @@ def ENV = System.getenv()
 version = project.mod_version + ".local"
 if (ENV.VERSION) {
 	version = ENV.VERSION
+	version = version.substring(version.lastIndexOf("/"))
 }
 
 group = project.maven_group
@@ -182,7 +183,6 @@ task publishModrinth(type: TaskModrinthUpload, dependsOn: remapJar) {
 	uploadFile = remapJar // This is the java jar task
 	addGameVersion('1.16.4')
 	addLoader('fabric')
-	changelog = ENV["GIT_CHANGELOG"]
 }
 
 // configure the maven publication
