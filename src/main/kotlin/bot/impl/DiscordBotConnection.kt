@@ -6,6 +6,7 @@ import club.minnced.discord.webhook.send.WebhookEmbedBuilder
 import club.minnced.discord.webhook.send.WebhookMessageBuilder
 import com.mojang.authlib.GameProfile
 import com.uchuhimo.konf.Config
+import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer
 import me.geek.tom.serverutils.DiscordBotSpec
 import me.geek.tom.serverutils.MiscSpec
@@ -21,6 +22,7 @@ import net.kyori.adventure.text.format.TextColor
 import net.minecraft.network.MessageType
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.text.Text
 import net.minecraft.util.Util
 
 class DiscordBotConnection(private val config: Config) : BotConnection, ListenerAdapter() {
@@ -110,8 +112,19 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
         val username = Component.text(event.member?.nickname?: event.author.name)
                 .color(TextColor.color(event.member?.colorRaw?: 0xFFFFFF))
         val minecraftMessage = FabricServerAudiences.of(this.server!!).toNative(
-                Component.join(Component.text(": "), username, (message)))
+                Component.join(Component.text(": "), username, message))
         this.server?.playerManager?.broadcastChatMessage(minecraftMessage, MessageType.CHAT, Util.NIL_UUID)
+    }
+
+    override fun onBroadcast(text: Text) {
+        val component = FabricServerAudiences.of(this.server!!).toAdventure(text)
+        val message = DiscordSerializer.INSTANCE.serialize(component)
+        val webhookMessage = WebhookMessageBuilder()
+            .setUsername("Server")
+            .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
+            .setContent(message)
+            .build()
+        this.webhookClient!!.send(webhookMessage)
     }
 
     override fun onChatMessage(user: GameProfile, headOverlay: Boolean, message: String) {
