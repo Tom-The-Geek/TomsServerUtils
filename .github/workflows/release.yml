@@ -60,16 +60,11 @@ jobs:
         uses: gradle/wrapper-validation-action@v1
       - name: Build with gradle
         run: ./gradlew build --stacktrace
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload GitHub release
+        uses: AButler/upload-release-assets@v2.0
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+          files: 'build/libs/*.jar'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
   # Publish a new version to Modrinth
   modrinth-publish:
