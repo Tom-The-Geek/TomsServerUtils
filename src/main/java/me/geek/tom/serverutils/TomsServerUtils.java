@@ -3,6 +3,7 @@ package me.geek.tom.serverutils;
 import com.uchuhimo.konf.Config;
 import me.geek.tom.serverutils.bot.BotConnection;
 import me.geek.tom.serverutils.chatfilter.ChatFilterManager;
+import me.geek.tom.serverutils.commands.BroadcastCommand;
 import me.geek.tom.serverutils.commands.HomeCommand;
 import me.geek.tom.serverutils.crashreports.CrashReportHelper;
 import me.geek.tom.serverutils.ducks.IPlayerAccessor;
@@ -14,6 +15,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.crash.CrashReport;
@@ -53,6 +55,10 @@ public class TomsServerUtils implements ModInitializer {
 
     public static boolean debugCommandSaveReport = true;
 
+    public static void broadcast(Text text) {
+        connection.onBroadcast(text);
+    }
+
     @Override
     public void onInitialize() {
         LOGGER.info("Initializing TomsServerUtils...");
@@ -82,6 +88,7 @@ public class TomsServerUtils implements ModInitializer {
             if (homesConfig.getEnabled()) {
                 HomeCommand.register(dispatcher);
             }
+            BroadcastCommand.register(dispatcher);
         });
     }
 
