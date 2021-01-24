@@ -48,10 +48,14 @@ repositories {
 		name = 'sonatype-oss'
 		url = 'https://oss.sonatype.org/content/repositories/snapshots/'
 	}
-    maven {
-        name = "Ladysnake Libs"
-        url = 'https://dl.bintray.com/ladysnake/libs'
-    }
+	maven {
+		name = "Ladysnake Libs"
+		url = 'https://dl.bintray.com/ladysnake/libs'
+	}
+	maven {
+		name = "Nucleoid"
+		url = "https://maven.nucleoid.xyz/"
+	}
 }
 
 sourceSets {
@@ -86,8 +90,6 @@ dependencies {
     modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cardinal_components_version}"
     include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cardinal_components_version}"
 
-//	shade('com.vdurmont:emoji-java:5.1.1')
-
 	shade 'dev.vankka:MCDiscordReserializer:4.0.0'
 	shade 'dev.vankka:SimpleAST:2.2.4-SNAPSHOT'
 	modImplementation 'net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT'
@@ -103,6 +105,10 @@ dependencies {
 	shade "com.uchuhimo:konf-toml:${project.konf_version}"
 
 	shade "org.mozilla:rhino:1.7.13"
+
+	// server-translations
+	modImplementation "fr.catcore:server-translations-api:1.4.0"
+	include "fr.catcore:server-translations-api:1.4.0"
 }
 
 processResources {

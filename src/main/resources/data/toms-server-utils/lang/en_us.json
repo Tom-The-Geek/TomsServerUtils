@@ -1,0 +1,14 @@
+{
+  "serverutils.home.deleted": "Home deleted: %s",
+  "serverutils.home.created": "Created a home called %s!",
+  "serverutils.home.list.none": "You have no homes! :(",
+  "serverutils.home.list": "Here is a list of your homes:",
+  "serverutils.home.tp.denied.cross-dimension": "You are not allowed to teleport to homes cross-dimensionally",
+  "serverutils.home.tp.denied.notexists": "You do not have a home called: %s",
+  "serverutils.home.tp.denied.worldnotexists": "The world: %s no longer exists to teleport to!",
+  "serverutils.home.create.failed.exists": "You already have a home called: %s",
+  "serverutils.home.create.failed.limit": "Could not create a new home, you are at the limit of %s homes!",
+  "serverutils.chatfilter.flagged": "The message you just sent was flagged by automatic filters and has not been sent. Try to be careful in future!",
+  "serverutils.chatfilter.flagged.filters": "The filters that flagged you were:",
+  "serverutils.teleported": "Woosh! You were teleported to: %s"
+}

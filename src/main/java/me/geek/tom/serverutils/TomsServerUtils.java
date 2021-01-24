@@ -17,6 +17,7 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.crash.CrashReport;
@@ -144,10 +145,9 @@ public class TomsServerUtils implements ModInitializer {
         if (!ok) {
             String failedMessage = String.join(", ", failed);
 
-            player.sendMessage(new LiteralText("The message you just sent was flagged by automatic filters" +
-                    " and has not been sent. Try to be careful in future!").formatted(Formatting.RED),
+            player.sendMessage(new TranslatableText("serverutils.chatfilter.flagged").formatted(Formatting.RED),
                     MessageType.SYSTEM, Util.NIL_UUID);
-            player.sendMessage(new LiteralText("The filters that failed were: ")
+            player.sendMessage(new TranslatableText("serverutils.chatfilter.flagged.filters")
                     .append(failedMessage).formatted(Formatting.RED), MessageType.SYSTEM, Util.NIL_UUID);
         }
 

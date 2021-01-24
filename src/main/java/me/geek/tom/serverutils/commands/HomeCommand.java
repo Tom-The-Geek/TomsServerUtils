@@ -10,8 +10,8 @@ import me.geek.tom.serverutils.sethome.Home;
 import me.geek.tom.serverutils.sethome.HomesComponent;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class HomeCommand {
-    private static final SimpleCommandExceptionType NOT_ALLOWED_CROSS_DIM = new SimpleCommandExceptionType(new LiteralText("You are not allowed to teleport to homes cross-dimensionally"));
+    private static final SimpleCommandExceptionType NOT_ALLOWED_CROSS_DIM = new SimpleCommandExceptionType(new TranslatableText("serverutils.home.tp.denied.cross-dimension"));
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(literal("home")
@@ -39,7 +39,7 @@ public class HomeCommand {
         Home home = HomeArgumentType.get(ctx, "home");
         HomesComponent component = Components.HOMES.get(player);
         component.removeHome(home);
-        ctx.getSource().sendFeedback(new LiteralText("Deleted home: " + home.getName()), false);
+        ctx.getSource().sendFeedback(new TranslatableText("serverutils.home.deleted", home.getName()), false);
 
         return 0;
     }
@@ -49,7 +49,7 @@ public class HomeCommand {
         Home home = HomeArgumentType.get(ctx, "home");
         if (!home.canTeleport(player)) throw NOT_ALLOWED_CROSS_DIM.create();
         home.teleport(player);
-        ctx.getSource().sendFeedback(new LiteralText("Woosh!"), false);
+        ctx.getSource().sendFeedback(new TranslatableText("serverutils.teleported", home.getName()), false);
 
         return 0;
     }
@@ -58,7 +58,7 @@ public class HomeCommand {
         ServerPlayerEntity player = ctx.getSource().getPlayer();
         HomesComponent component = Components.HOMES.get(player);
         Home home = component.createNewHome(getString(ctx, "name"), player.getServerWorld().getRegistryKey(), player.getBlockPos());
-        ctx.getSource().sendFeedback(new LiteralText("Created new home called " + home.getName() + "!"), false);
+        ctx.getSource().sendFeedback(new TranslatableText("serverutils.home.created", home.getName()), false);
 
         return 0;
     }
@@ -70,8 +70,8 @@ public class HomeCommand {
                 component.getAllInDimension(player.getServerWorld().getRegistryKey());
 
         MutableText header = homes.isEmpty() ?
-                new LiteralText("You have no homes :(").formatted(Formatting.RED) :
-                new LiteralText("Here is a list of your homes:").formatted(Formatting.GOLD);
+                new TranslatableText("serverutils.home.list.none").formatted(Formatting.RED) :
+                new TranslatableText("serverutils.home.list").formatted(Formatting.GOLD);
         ctx.getSource().sendFeedback(header, false);
         homes.stream().map(h -> h.toMessage(player)).forEach(text -> ctx.getSource().sendFeedback(text, false));
 

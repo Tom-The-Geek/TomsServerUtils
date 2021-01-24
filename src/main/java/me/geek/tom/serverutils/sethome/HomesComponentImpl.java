@@ -7,7 +7,7 @@ import me.geek.tom.serverutils.TomsServerUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
@@ -21,9 +21,9 @@ import java.util.List;
 
 public class HomesComponentImpl implements HomesComponent {
 
-    private static final DynamicCommandExceptionType HOME_EXISTS = new DynamicCommandExceptionType(name -> new LiteralText("You already have a home called: " + name));
-    public static final DynamicCommandExceptionType HOME_NOT_FOUND = new DynamicCommandExceptionType(name -> new LiteralText("You do not have a home called: " + name));
-    private static final DynamicCommandExceptionType TOO_MANY_HOMES = new DynamicCommandExceptionType(max -> new LiteralText("Could not create a new home, you are at the limit of " + max + " homes!"));
+    private static final DynamicCommandExceptionType HOME_EXISTS = new DynamicCommandExceptionType(name -> new TranslatableText("serverutils.home.create.failed.exists", name));
+    public static final DynamicCommandExceptionType HOME_NOT_FOUND = new DynamicCommandExceptionType(name -> new TranslatableText("serverutils.home.tp.denied.notexists", name));
+    private static final DynamicCommandExceptionType TOO_MANY_HOMES = new DynamicCommandExceptionType(max -> new TranslatableText("serverutils.home.create.failed.limit", max));
 
     private final List<Home> homes = new ArrayList<>();
     private final Object2ObjectOpenHashMap<String, Home> homesByName = new Object2ObjectOpenHashMap<>();

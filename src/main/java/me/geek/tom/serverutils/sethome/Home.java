@@ -7,10 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -23,7 +20,7 @@ import java.util.Objects;
 
 public class Home {
 
-    private static final DynamicCommandExceptionType WORLD_NOT_FOUND = new DynamicCommandExceptionType(world -> new LiteralText("The world: " + world + " no longer exists to teleport to!"));
+    private static final DynamicCommandExceptionType WORLD_NOT_FOUND = new DynamicCommandExceptionType(world -> new TranslatableText("serverutils.home.tp.denied.worldnotexists", world));
 
     @NotNull private final String name;
     @NotNull private final RegistryKey<World> dimension;
