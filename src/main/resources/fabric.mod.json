@@ -10,7 +10,6 @@
   "contributors": [],
   "contact": {},
   "license": "MIT",
-  "icon": "assets/fabulous-server-utils/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
