@@ -53,7 +53,17 @@ public class HomesComponentImpl implements HomesComponent {
     public @NotNull Home createNewHome(@NotNull String name, @NotNull RegistryKey<World> dimension, @NotNull BlockPos pos) throws CommandSyntaxException {
         if (this.homesByName.containsKey(name)) throw HOME_EXISTS.create(name);
         int maxHomes = TomsServerUtils.homesConfig.getMaxHomeAmount();
-        if (maxHomes != -1 && this.homes.size() == maxHomes) throw TOO_MANY_HOMES.create(maxHomes);
+        if (maxHomes != -1) {
+            if (TomsServerUtils.homesConfig.getMaxHomesPerDimension()) {
+                if (this.homesByWorld.getOrDefault(dimension.getValue(), Collections.emptyList()).size() >= maxHomes) {
+                    throw TOO_MANY_HOMES.create(maxHomes);
+                }
+            } else {
+                if (this.homes.size() >= maxHomes) {
+                    throw TOO_MANY_HOMES.create(maxHomes);
+                }
+            }
+        }
 
         Home home = new Home(name, dimension, pos);
         this.homes.add(home);

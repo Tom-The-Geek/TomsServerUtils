@@ -35,6 +35,7 @@ object HomesSpec : ConfigSpec() {
     val enabled by required<Boolean>()
     val allowCrossDimension by required<Boolean>()
     val maxHomeAmount by required<Int>()
+    val maxHomesPerDimension by required<Boolean>()
 }
 
 fun loadConfig(configDir: Path): Config {
@@ -60,6 +61,7 @@ class HomesConfig(
     val enabled get() = config[HomesSpec.enabled]
     val allowCrossDimension get() = config[HomesSpec.allowCrossDimension]
     val maxHomeAmount get() = config[HomesSpec.maxHomeAmount]
+    val maxHomesPerDimension get() = config[HomesSpec.maxHomesPerDimension]
 }
 
 class ChatFilterConfig(

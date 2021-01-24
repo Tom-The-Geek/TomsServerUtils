@@ -46,3 +46,5 @@
     # Maximum amount of homes a player can have
     # Set to -1 for unlimited
     max_home_amount = 3
+    # Should the maximum homes count be per-dimension (true), or across all dimensions (false)
+    maxHomesPerDimension = false
