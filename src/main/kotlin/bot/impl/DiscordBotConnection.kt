@@ -154,6 +154,21 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
         this.webhookClient!!.send(webhookMessage)
     }
 
+    override fun onPlayerDeath(player: ServerPlayerEntity, message: Text) {
+        val overlay = (player as IPlayerAccessor).serverutils_showHat()
+        val avatarUrl = createAvatarUrl(player.gameProfile, overlay)
+        val webhookMessage = WebhookMessageBuilder()
+            .setUsername("Server")
+            .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
+            .addEmbeds(WebhookEmbedBuilder()
+                .setColor(0xFF0000)
+                .setDescription("")
+                .setAuthor(WebhookEmbed.EmbedAuthor(message.string, avatarUrl, ""))
+                .build())
+            .build()
+        this.webhookClient!!.send(webhookMessage)
+    }
+
     override fun onPlayerLeave(player: ServerPlayerEntity) {
         val overlay = (player as IPlayerAccessor).serverutils_showHat()
         val avatarUrl = createAvatarUrl(player.gameProfile, overlay)

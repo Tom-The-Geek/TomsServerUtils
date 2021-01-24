@@ -10,6 +10,7 @@ import me.geek.tom.serverutils.ducks.IPlayerAccessor;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.network.MessageType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -120,6 +121,10 @@ public class TomsServerUtils implements ModInitializer {
     public static void stopped(MinecraftServer server) {
         connection.serverStopped(server);
         connection.disconnect();
+    }
+
+    public static void onDeath(ServerPlayerEntity player, DamageSource source, Text text) {
+        connection.onPlayerDeath(player, text);
     }
 
     public static void join(ServerPlayerEntity player) {

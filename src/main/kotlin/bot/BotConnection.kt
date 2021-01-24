@@ -24,6 +24,7 @@ interface BotConnection {
     fun onChatMessage(user: GameProfile, headOverlay: Boolean, message: String)
     fun onPlayerLeave(player: ServerPlayerEntity)
     fun onPlayerJoin(player: ServerPlayerEntity)
+    fun onPlayerDeath(player: ServerPlayerEntity, message: Text)
 
 }
 
@@ -38,6 +39,7 @@ class NoopBotConnection : BotConnection {
     override fun onChatMessage(user: GameProfile, headOverlay: Boolean, message: String) { }
     override fun onPlayerLeave(player: ServerPlayerEntity) { }
     override fun onPlayerJoin(player: ServerPlayerEntity) { }
+    override fun onPlayerDeath(player: ServerPlayerEntity, message: Text) { }
 }
 
 enum class BotType {
