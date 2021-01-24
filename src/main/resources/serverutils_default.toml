@@ -23,7 +23,7 @@
 [misc]
     # Change the service used for player avatars.
     # Will be used like: <profileEndpoint> + <player uuid> + "?overlay=" + <player helmet skin layer active>
-    profileEndpoint = "https://crafatar.com/avatars/"
+    profileEndpoint = "https://minotar.net/helm/"
 
 # Settings for the Discord crash reporter
 [crash_report]
