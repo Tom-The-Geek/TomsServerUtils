@@ -118,7 +118,7 @@ public class TomsServerUtils implements ModInitializer {
     }
 
     public static void onDeath(ServerPlayerEntity player, DamageSource source, Text text) {
-
+        connection.onPlayerDeath(player, text);
     }
 
     public static void join(ServerPlayerEntity player) {

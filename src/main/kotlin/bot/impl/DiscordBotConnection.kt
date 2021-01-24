@@ -6,6 +6,7 @@ import club.minnced.discord.webhook.send.WebhookEmbedBuilder
 import club.minnced.discord.webhook.send.WebhookMessageBuilder
 import com.mojang.authlib.GameProfile
 import com.uchuhimo.konf.Config
+import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer
 import me.geek.tom.serverutils.DiscordBotSpec
 import me.geek.tom.serverutils.MiscSpec
@@ -21,6 +22,7 @@ import net.kyori.adventure.text.format.TextColor
 import net.minecraft.network.MessageType
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.text.Text
 import net.minecraft.util.Util
 
 class DiscordBotConnection(private val config: Config) : BotConnection, ListenerAdapter() {
@@ -138,6 +140,21 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                         .setAuthor(WebhookEmbed.EmbedAuthor("${player.gameProfile.name} joined the game!", avatarUrl, ""))
                         .build())
                 .build()
+        this.webhookClient!!.send(webhookMessage)
+    }
+
+    override fun onPlayerDeath(player: ServerPlayerEntity, message: Text) {
+        val overlay = (player as IPlayerAccessor).serverutils_showHat()
+        val avatarUrl = createAvatarUrl(player.gameProfile, overlay)
+        val webhookMessage = WebhookMessageBuilder()
+            .setUsername("Server")
+            .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
+            .addEmbeds(WebhookEmbedBuilder()
+                .setColor(0xFF0000)
+                .setDescription("")
+                .setAuthor(WebhookEmbed.EmbedAuthor(message.string, avatarUrl, ""))
+                .build())
+            .build()
         this.webhookClient!!.send(webhookMessage)
     }
 
