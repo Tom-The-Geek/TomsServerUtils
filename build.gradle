@@ -107,8 +107,8 @@ dependencies {
 	shade "org.mozilla:rhino:1.7.13"
 
 	// server-translations
-	modImplementation "fr.catcore:server-translations-api:1.4.0"
-	include "fr.catcore:server-translations-api:1.4.0"
+	modImplementation "fr.catcore:server-translations-api:1.4.1"
+	include "fr.catcore:server-translations-api:1.4.1"
 }
 
 processResources {
