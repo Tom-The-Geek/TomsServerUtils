@@ -8,9 +8,12 @@ import com.mojang.authlib.GameProfile
 import com.uchuhimo.konf.Config
 import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializerOptions
 import me.geek.tom.serverutils.DiscordBotSpec
 import me.geek.tom.serverutils.MiscSpec
 import me.geek.tom.serverutils.bot.BotConnection
+import me.geek.tom.serverutils.clickToCopy
+import me.geek.tom.serverutils.discord.MentionToMinecraftRenderer
 import me.geek.tom.serverutils.ducks.IPlayerAccessor
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
@@ -30,6 +33,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
     private var jda: JDA? = null
     private var webhookClient: WebhookClient? = null
     private var server: MinecraftServer? = null
+    private var minecraftSerializer: MinecraftSerializer? = null
 
     override fun connect(server: MinecraftServer) {
         this.jda = JDABuilder.createDefault(this.config[DiscordBotSpec.token])
@@ -37,9 +41,14 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                 .build()
         this.webhookClient = WebhookClient.withUrl(this.config[DiscordBotSpec.webhook])
         this.server = server
+        minecraftSerializer = MinecraftSerializer(MinecraftSerializerOptions.defaults()
+            .addRenderer(MentionToMinecraftRenderer(jda!!)))
     }
 
     override fun disconnect() {
+        if (minecraftSerializer != null) {
+            minecraftSerializer = null
+        }
         if (jda != null) {
             jda!!.shutdown()
             jda = null
@@ -108,11 +117,15 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         if (event.channel.id != this.config[DiscordBotSpec.messageChannel] || event.author.isBot) return
 
-        val message = MinecraftSerializer.INSTANCE.serialize(event.message.contentRaw)
-        val username = Component.text(event.member?.nickname?: event.author.name)
-                .color(TextColor.color(event.member?.colorRaw?: 0xFFFFFF))
+        val message = minecraftSerializer!!.serialize(event.message.contentRaw)
+
+        val username = Component.text("@" + (event.member?.nickname?: event.author.name))
+            .color(TextColor.color(event.member?.colorRaw?: 0xFFFFFF))
+            .clickToCopy("Copy mention", "<@${event.author.idLong}>")
+
         val minecraftMessage = FabricServerAudiences.of(this.server!!).toNative(
                 Component.join(Component.text(": "), username, message))
+
         this.server?.playerManager?.broadcastChatMessage(minecraftMessage, MessageType.CHAT, Util.NIL_UUID)
     }
 

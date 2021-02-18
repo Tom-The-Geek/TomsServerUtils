@@ -90,7 +90,7 @@ dependencies {
     modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cardinal_components_version}"
     include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cardinal_components_version}"
 
-	shade 'dev.vankka:MCDiscordReserializer:4.0.0'
+	shade 'dev.vankka:MCDiscordReserializer:4.1.1-SNAPSHOT'
 	shade 'dev.vankka:SimpleAST:2.2.4-SNAPSHOT'
 	modImplementation 'net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT'
 	include 'net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT'
