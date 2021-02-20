@@ -9,7 +9,11 @@ class ChatFilterManager(
     private val filters: MutableList<ChatFilter> = ArrayList(),
 ) {
     fun init(configDir: Path, server: MinecraftServer) {
-        Files.list(configDir.resolve("scripts"))
+        val scriptsDir = configDir.resolve("scripts")
+        if (!Files.exists(scriptsDir)) {
+            Files.createDirectories(scriptsDir)
+        }
+        Files.list(scriptsDir)
             .filter { Files.isRegularFile(it) }
             .filter { it.fileName.toString().endsWith(".json") }
             .forEach {
