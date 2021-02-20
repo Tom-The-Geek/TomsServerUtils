@@ -39,7 +39,9 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
         this.jda = JDABuilder.createDefault(this.config[DiscordBotSpec.token])
                 .addEventListeners(this)
                 .build()
-        this.webhookClient = WebhookClient.withUrl(this.config[DiscordBotSpec.webhook])
+        if (this.config[DiscordBotSpec.webhook].isNotEmpty()) {
+            this.webhookClient = WebhookClient.withUrl(this.config[DiscordBotSpec.webhook])
+        }
         this.server = server
         minecraftSerializer = MinecraftSerializer(MinecraftSerializerOptions.defaults()
             .addRenderer(MentionToMinecraftRenderer(jda!!)))
@@ -72,7 +74,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                         .setDescription("")
                         .build())
                 .build()
-        this.webhookClient!!.send(webhookMessage)
+        this.webhookClient?.send(webhookMessage)
     }
 
     override fun serverStarted(server: MinecraftServer) {
@@ -85,7 +87,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                         .setDescription("")
                         .build())
                 .build()
-        this.webhookClient!!.send(webhookMessage)
+        this.webhookClient?.send(webhookMessage)
     }
 
     override fun serverStopping(server: MinecraftServer) {
@@ -98,7 +100,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                         .setDescription("")
                         .build())
                 .build()
-        this.webhookClient!!.send(webhookMessage)
+        this.webhookClient?.send(webhookMessage)
     }
 
     override fun serverStopped(server: MinecraftServer) {
@@ -111,7 +113,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                         .setDescription("")
                         .build())
                 .build()
-        this.webhookClient!!.send(webhookMessage)
+        this.webhookClient?.send(webhookMessage)
     }
 
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
@@ -137,7 +139,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
             .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
             .setContent(message)
             .build()
-        this.webhookClient!!.send(webhookMessage)
+        this.webhookClient?.send(webhookMessage)
     }
 
     override fun onChatMessage(user: GameProfile, headOverlay: Boolean, message: String) {
@@ -146,7 +148,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                 .setAvatarUrl(createAvatarUrl(user, headOverlay))
                 .setContent(message)
                 .build()
-        this.webhookClient!!.send(webhookMessage)
+        this.webhookClient?.send(webhookMessage)
     }
 
     private fun createAvatarUrl(user: GameProfile, headOverlay: Boolean) =
@@ -164,7 +166,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                         .setAuthor(WebhookEmbed.EmbedAuthor("${player.gameProfile.name} joined the game!", avatarUrl, ""))
                         .build())
                 .build()
-        this.webhookClient!!.send(webhookMessage)
+        this.webhookClient?.send(webhookMessage)
     }
 
     override fun onPlayerDeath(player: ServerPlayerEntity, message: Text) {
@@ -179,7 +181,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                 .setAuthor(WebhookEmbed.EmbedAuthor(message.string, avatarUrl, ""))
                 .build())
             .build()
-        this.webhookClient!!.send(webhookMessage)
+        this.webhookClient?.send(webhookMessage)
     }
 
     override fun onPlayerLeave(player: ServerPlayerEntity) {
@@ -194,6 +196,6 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                         .setColor(0xFF0000)
                         .build())
                 .build()
-        this.webhookClient!!.send(webhookMessage)
+        this.webhookClient?.send(webhookMessage)
     }
 }
