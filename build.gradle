@@ -109,6 +109,10 @@ dependencies {
 	// server-translations
 	modImplementation "fr.catcore:server-translations-api:1.4.1"
 	include "fr.catcore:server-translations-api:1.4.1"
+
+	include "org.slf4j:slf4j-api:1.7.25"
+	implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.13.1"
+	include "org.apache.logging.log4j:log4j-slf4j-impl:2.13.1"
 }
 
 processResources {
@@ -154,6 +158,7 @@ shadowJar {
 	exclude 'org/checkerframework/**', 'org/jetbrains/**', 'org/intellij/**'
 	exclude 'com/google/gson/**'
 	exclude 'net/kyori/**'
+	exclude 'org/slf4j/**'
 
 	def relocPath = 'me.geek.tom.serverutils.libs.'
 	relocate 'com.iwebpp.crypto', relocPath + 'com.iwebpp.crypto'
@@ -164,7 +169,6 @@ shadowJar {
 	relocate 'org.apache.commons.lang3', relocPath + 'org.apache.commons.lang3'
 	relocate 'org.apache.commons.collections4', relocPath + 'org.apache.commons.collections4'
 	relocate 'org.apache.commons.text', relocPath + 'org.apache.commons.text'
-	relocate 'org.slf4j', relocPath + 'org.slf4j'
 	relocate 'club.minnced.discord', relocPath + 'club.minnced.discord'
 	relocate 'org.json', relocPath + 'org.json'
 	relocate 'com.uchuhimo.konf', relocPath + 'com.uchuhimo.konf'
