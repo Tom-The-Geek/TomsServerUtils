@@ -1,6 +1,8 @@
 package me.geek.tom.serverutils.bot.impl
 
 import club.minnced.discord.webhook.WebhookClient
+import club.minnced.discord.webhook.WebhookClientBuilder
+import club.minnced.discord.webhook.send.AllowedMentions
 import club.minnced.discord.webhook.send.WebhookEmbed
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder
 import club.minnced.discord.webhook.send.WebhookMessageBuilder
@@ -34,13 +36,22 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
     private var webhookClient: WebhookClient? = null
     private var server: MinecraftServer? = null
     private var minecraftSerializer: MinecraftSerializer? = null
+    private val allowedMentions by lazy {
+        AllowedMentions.none()
+            .withParseEveryone(this.config[DiscordBotSpec.AllowedMentions.everyone])
+            .withParseUsers(this.config[DiscordBotSpec.AllowedMentions.users])
+            .withParseRoles(this.config[DiscordBotSpec.AllowedMentions.roles])
+    }
 
     override fun connect(server: MinecraftServer) {
         this.jda = JDABuilder.createDefault(this.config[DiscordBotSpec.token])
                 .addEventListeners(this)
                 .build()
         if (this.config[DiscordBotSpec.webhook].isNotEmpty()) {
-            this.webhookClient = WebhookClient.withUrl(this.config[DiscordBotSpec.webhook])
+            this.webhookClient = WebhookClientBuilder(this.config[DiscordBotSpec.webhook])
+                .setDaemon(true)
+                .setAllowedMentions(allowedMentions)
+                .build()
         }
         this.server = server
         minecraftSerializer = MinecraftSerializer(MinecraftSerializerOptions.defaults()
@@ -66,53 +77,57 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
 
     override fun serverStarting(server: MinecraftServer) {
         val webhookMessage = WebhookMessageBuilder()
-                .setUsername("Server")
-                .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
-                .addEmbeds(WebhookEmbedBuilder()
-                        .setColor(0x00FF00)
-                        .setAuthor(WebhookEmbed.EmbedAuthor("Server starting...", "", ""))
-                        .setDescription("")
-                        .build())
-                .build()
+            .setAllowedMentions(allowedMentions)
+            .setUsername("Server")
+            .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
+            .addEmbeds(WebhookEmbedBuilder()
+                .setColor(0x00FF00)
+                .setAuthor(WebhookEmbed.EmbedAuthor("Server starting...", "", ""))
+                .setDescription("")
+                .build())
+            .build()
         this.webhookClient?.send(webhookMessage)
     }
 
     override fun serverStarted(server: MinecraftServer) {
         val webhookMessage = WebhookMessageBuilder()
-                .setUsername("Server")
-                .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
-                .addEmbeds(WebhookEmbedBuilder()
-                        .setColor(0x00FF00)
-                        .setAuthor(WebhookEmbed.EmbedAuthor("Server started!", "", ""))
-                        .setDescription("")
-                        .build())
-                .build()
+            .setAllowedMentions(allowedMentions)
+            .setUsername("Server")
+            .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
+            .addEmbeds(WebhookEmbedBuilder()
+                .setColor(0x00FF00)
+                .setAuthor(WebhookEmbed.EmbedAuthor("Server started!", "", ""))
+                .setDescription("")
+                .build())
+            .build()
         this.webhookClient?.send(webhookMessage)
     }
 
     override fun serverStopping(server: MinecraftServer) {
         val webhookMessage = WebhookMessageBuilder()
-                .setUsername("Server")
-                .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
-                .addEmbeds(WebhookEmbedBuilder()
-                        .setColor(0xFF0000)
-                        .setAuthor(WebhookEmbed.EmbedAuthor("Server stopping...", "", ""))
-                        .setDescription("")
-                        .build())
-                .build()
+            .setAllowedMentions(allowedMentions)
+            .setUsername("Server")
+            .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
+            .addEmbeds(WebhookEmbedBuilder()
+                .setColor(0xFF0000)
+                .setAuthor(WebhookEmbed.EmbedAuthor("Server stopping...", "", ""))
+                .setDescription("")
+                .build())
+            .build()
         this.webhookClient?.send(webhookMessage)
     }
 
     override fun serverStopped(server: MinecraftServer) {
         val webhookMessage = WebhookMessageBuilder()
-                .setUsername("Server")
-                .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
-                .addEmbeds(WebhookEmbedBuilder()
-                        .setColor(0xFF0000)
-                        .setAuthor(WebhookEmbed.EmbedAuthor("Server stopped!", "", ""))
-                        .setDescription("")
-                        .build())
-                .build()
+            .setAllowedMentions(allowedMentions)
+            .setUsername("Server")
+            .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
+            .addEmbeds(WebhookEmbedBuilder()
+                .setColor(0xFF0000)
+                .setAuthor(WebhookEmbed.EmbedAuthor("Server stopped!", "", ""))
+                .setDescription("")
+                .build())
+            .build()
         this.webhookClient?.send(webhookMessage)
     }
 
@@ -135,6 +150,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
         val component = FabricServerAudiences.of(this.server!!).toAdventure(text)
         val message = DiscordSerializer.INSTANCE.serialize(component)
         val webhookMessage = WebhookMessageBuilder()
+            .setAllowedMentions(allowedMentions)
             .setUsername("Server")
             .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
             .setContent(message)
@@ -144,10 +160,11 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
 
     override fun onChatMessage(user: GameProfile, headOverlay: Boolean, message: String) {
         val webhookMessage = WebhookMessageBuilder()
-                .setUsername(user.name)
-                .setAvatarUrl(createAvatarUrl(user, headOverlay))
-                .setContent(message)
-                .build()
+            .setAllowedMentions(allowedMentions)
+            .setUsername(user.name)
+            .setAvatarUrl(createAvatarUrl(user, headOverlay))
+            .setContent(message)
+            .build()
         this.webhookClient?.send(webhookMessage)
     }
 
@@ -158,14 +175,15 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
         val overlay = (player as IPlayerAccessor).serverutils_showHat()
         val avatarUrl = createAvatarUrl(player.gameProfile, overlay)
         val webhookMessage = WebhookMessageBuilder()
-                .setUsername("Server")
-                .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
-                .addEmbeds(WebhookEmbedBuilder()
-                        .setColor(0x00FF00)
-                        .setDescription("")
-                        .setAuthor(WebhookEmbed.EmbedAuthor("${player.gameProfile.name} joined the game!", avatarUrl, ""))
-                        .build())
-                .build()
+            .setAllowedMentions(allowedMentions)
+            .setUsername("Server")
+            .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
+            .addEmbeds(WebhookEmbedBuilder()
+                .setColor(0x00FF00)
+                .setDescription("")
+                .setAuthor(WebhookEmbed.EmbedAuthor("${player.gameProfile.name} joined the game!", avatarUrl, ""))
+                .build())
+            .build()
         this.webhookClient?.send(webhookMessage)
     }
 
@@ -173,6 +191,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
         val overlay = (player as IPlayerAccessor).serverutils_showHat()
         val avatarUrl = createAvatarUrl(player.gameProfile, overlay)
         val webhookMessage = WebhookMessageBuilder()
+            .setAllowedMentions(allowedMentions)
             .setUsername("Server")
             .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
             .addEmbeds(WebhookEmbedBuilder()
@@ -188,14 +207,15 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
         val overlay = (player as IPlayerAccessor).serverutils_showHat()
         val avatarUrl = createAvatarUrl(player.gameProfile, overlay)
         val webhookMessage = WebhookMessageBuilder()
-                .setUsername("Server")
-                .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
-                .addEmbeds(WebhookEmbedBuilder()
-                        .setDescription("")
-                        .setAuthor(WebhookEmbed.EmbedAuthor("${player.gameProfile.name} left the game!", avatarUrl, ""))
-                        .setColor(0xFF0000)
-                        .build())
-                .build()
+            .setAllowedMentions(allowedMentions)
+            .setUsername("Server")
+            .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
+            .addEmbeds(WebhookEmbedBuilder()
+                .setDescription("")
+                .setAuthor(WebhookEmbed.EmbedAuthor("${player.gameProfile.name} left the game!", avatarUrl, ""))
+                .setColor(0xFF0000)
+                .build())
+            .build()
         this.webhookClient?.send(webhookMessage)
     }
 }

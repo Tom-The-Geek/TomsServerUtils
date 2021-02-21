@@ -19,6 +19,15 @@
     # Default is a grass block icon.
     server_icon = "https://static.wikia.nocookie.net/minecraft_gamepedia/images/9/93/Grass_Block_JE7_BE6.png/revision/latest?cb=20200830143209&format=original"
 
+# Allowed mentions for chat messages being forwarded to Discord
+[discordBot.allowedMentions]
+    # Allow @everyone and @here
+    everyone = false
+    # Allow mentioning users
+    users = true
+    # Allow mentioning roles
+    roles = true
+
 # Misc settings used by multiple components
 [misc]
     # Change the service used for player avatars.

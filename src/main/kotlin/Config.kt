@@ -13,6 +13,12 @@ object DiscordBotSpec : ConfigSpec() {
     val webhook by required<String>()
     val messageChannel by required<String>()
     val serverIcon by required<String>()
+
+    object AllowedMentions : ConfigSpec() {
+        val everyone by required<Boolean>()
+        val users by required<Boolean>()
+        val roles by required<Boolean>()
+    }
 }
 
 object MiscSpec : ConfigSpec() {
