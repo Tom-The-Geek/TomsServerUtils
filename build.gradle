@@ -111,8 +111,8 @@ dependencies {
 	include "fr.catcore:server-translations-api:1.4.1"
 
 	include "org.slf4j:slf4j-api:1.7.25"
-	implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.13.1"
-	include "org.apache.logging.log4j:log4j-slf4j-impl:2.13.1"
+	implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.8.1"
+	include "org.apache.logging.log4j:log4j-slf4j-impl:2.8.1"
 }
 
 processResources {
