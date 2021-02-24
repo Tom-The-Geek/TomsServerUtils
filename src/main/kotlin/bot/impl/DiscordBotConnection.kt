@@ -187,7 +187,8 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
         this.webhookClient?.send(webhookMessage)
     }
 
-    override fun onPlayerDeath(player: ServerPlayerEntity, message: Text) {
+    // This function is called for player deaths and advancements.
+    override fun onPlayerAnnouncement(player: ServerPlayerEntity, message: Text, colour: Int) {
         val overlay = (player as IPlayerAccessor).serverutils_showHat()
         val avatarUrl = createAvatarUrl(player.gameProfile, overlay)
         val webhookMessage = WebhookMessageBuilder()
@@ -195,7 +196,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
             .setUsername("Server")
             .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
             .addEmbeds(WebhookEmbedBuilder()
-                .setColor(0xFF0000)
+                .setColor(colour)
                 .setDescription("")
                 .setAuthor(WebhookEmbed.EmbedAuthor(message.string, avatarUrl, ""))
                 .build())

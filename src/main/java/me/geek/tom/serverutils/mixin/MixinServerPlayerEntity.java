@@ -15,6 +15,6 @@ public class MixinServerPlayerEntity {
     @Inject(method = "onDeath", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/PlayerManager;broadcastChatMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/MessageType;Ljava/util/UUID;)V"))
     private void hook_deathMessage(DamageSource source, CallbackInfo ci, boolean bl, Text text) {
-        TomsServerUtils.onDeath((ServerPlayerEntity) (Object) this, source, text);
+        TomsServerUtils.onPlayerAnnouncement((ServerPlayerEntity) (Object) this, text, 0xFF0000);
     }
 }
