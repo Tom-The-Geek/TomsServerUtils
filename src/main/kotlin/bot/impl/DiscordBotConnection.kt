@@ -29,6 +29,8 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import net.minecraft.util.Util
+import okhttp3.OkHttpClient
+import okhttp3.Protocol
 
 class DiscordBotConnection(private val config: Config) : BotConnection, ListenerAdapter() {
 
@@ -51,6 +53,9 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
             this.webhookClient = WebhookClientBuilder(this.config[DiscordBotSpec.webhook])
                 .setDaemon(true)
                 .setAllowedMentions(allowedMentions)
+                .setHttpClient(OkHttpClient.Builder()
+                    .protocols(listOf(Protocol.HTTP_1_1))
+                    .build())
                 .build()
         }
         this.server = server
