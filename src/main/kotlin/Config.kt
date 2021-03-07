@@ -10,7 +10,8 @@ import java.nio.file.Path
 
 object DiscordBotSpec : ConfigSpec() {
     val token by required<String>()
-    val webhook by required<String>()
+    val chatWebhook by required<String>()
+    val eventWebhook by required<String>()
     val messageChannel by required<String>()
     val serverIcon by required<String>()
 
@@ -42,6 +43,7 @@ object HomesSpec : ConfigSpec() {
     val allowCrossDimension by required<Boolean>()
     val maxHomeAmount by required<Int>()
     val maxHomesPerDimension by required<Boolean>()
+    val homeDelay by required<Int>()
 }
 
 fun loadConfig(configDir: Path): Config {
