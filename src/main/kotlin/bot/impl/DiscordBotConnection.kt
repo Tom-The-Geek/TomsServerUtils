@@ -35,7 +35,8 @@ import okhttp3.Protocol
 class DiscordBotConnection(private val config: Config) : BotConnection, ListenerAdapter() {
 
     private var jda: JDA? = null
-    private var webhookClient: WebhookClient? = null
+    private var chatWebhookClient: WebhookClient? = null
+    private var eventWebhookClient: WebhookClient? = null
     private var server: MinecraftServer? = null
     private var minecraftSerializer: MinecraftSerializer? = null
     private val allowedMentions by lazy {
@@ -49,8 +50,17 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
         this.jda = JDABuilder.createDefault(this.config[DiscordBotSpec.token])
                 .addEventListeners(this)
                 .build()
-        if (this.config[DiscordBotSpec.webhook].isNotEmpty()) {
-            this.webhookClient = WebhookClientBuilder(this.config[DiscordBotSpec.webhook])
+        if (this.config[DiscordBotSpec.chatWebhook].isNotEmpty()) {
+            this.chatWebhookClient = WebhookClientBuilder(this.config[DiscordBotSpec.chatWebhook])
+                .setDaemon(true)
+                .setAllowedMentions(allowedMentions)
+                .setHttpClient(OkHttpClient.Builder()
+                    .protocols(listOf(Protocol.HTTP_1_1))
+                    .build())
+                .build()
+        }
+        if (this.config[DiscordBotSpec.eventWebhook].isNotEmpty()) {
+            this.eventWebhookClient = WebhookClientBuilder(this.config[DiscordBotSpec.eventWebhook])
                 .setDaemon(true)
                 .setAllowedMentions(allowedMentions)
                 .setHttpClient(OkHttpClient.Builder()
@@ -71,9 +81,13 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
             jda!!.shutdown()
             jda = null
         }
-        if (webhookClient != null) {
-            webhookClient!!.close()
-            webhookClient = null
+        if (chatWebhookClient != null) {
+            chatWebhookClient!!.close()
+            chatWebhookClient = null
+        }
+        if (eventWebhookClient != null) {
+            eventWebhookClient!!.close()
+            eventWebhookClient = null
         }
         if (this.server != null) {
             this.server = null
@@ -91,7 +105,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                 .setDescription("")
                 .build())
             .build()
-        this.webhookClient?.send(webhookMessage)
+        this.eventWebhookClient?.send(webhookMessage)
     }
 
     override fun serverStarted(server: MinecraftServer) {
@@ -105,7 +119,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                 .setDescription("")
                 .build())
             .build()
-        this.webhookClient?.send(webhookMessage)
+        this.eventWebhookClient?.send(webhookMessage)
     }
 
     override fun serverStopping(server: MinecraftServer) {
@@ -119,7 +133,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                 .setDescription("")
                 .build())
             .build()
-        this.webhookClient?.send(webhookMessage)
+        this.eventWebhookClient?.send(webhookMessage)
     }
 
     override fun serverStopped(server: MinecraftServer) {
@@ -133,7 +147,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                 .setDescription("")
                 .build())
             .build()
-        this.webhookClient?.send(webhookMessage)
+        this.eventWebhookClient?.send(webhookMessage)
     }
 
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
@@ -160,7 +174,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
             .setAvatarUrl(this.config[DiscordBotSpec.serverIcon])
             .setContent(message)
             .build()
-        this.webhookClient?.send(webhookMessage)
+        this.chatWebhookClient?.send(webhookMessage)
     }
 
     override fun onChatMessage(user: GameProfile, headOverlay: Boolean, message: String) {
@@ -170,7 +184,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
             .setAvatarUrl(createAvatarUrl(user, headOverlay))
             .setContent(message)
             .build()
-        this.webhookClient?.send(webhookMessage)
+        this.chatWebhookClient?.send(webhookMessage)
     }
 
     private fun createAvatarUrl(user: GameProfile, headOverlay: Boolean) =
@@ -189,7 +203,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                 .setAuthor(WebhookEmbed.EmbedAuthor("${player.gameProfile.name} joined the game!", avatarUrl, ""))
                 .build())
             .build()
-        this.webhookClient?.send(webhookMessage)
+        this.eventWebhookClient?.send(webhookMessage)
     }
 
     // This function is called for player deaths and advancements.
@@ -206,7 +220,7 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                 .setAuthor(WebhookEmbed.EmbedAuthor(message.string, avatarUrl, ""))
                 .build())
             .build()
-        this.webhookClient?.send(webhookMessage)
+        this.eventWebhookClient?.send(webhookMessage)
     }
 
     override fun onPlayerLeave(player: ServerPlayerEntity) {
@@ -222,6 +236,6 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
                 .setColor(0xFF0000)
                 .build())
             .build()
-        this.webhookClient?.send(webhookMessage)
+        this.eventWebhookClient?.send(webhookMessage)
     }
 }

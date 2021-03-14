@@ -11,7 +11,9 @@
     # Create a app at https://discord.com/developers/applications, add a bot and then copy the token here
     token = ""
     # The Discord webhook URL to send the Minecraft chat to
-    webhook = ""
+    chat_webhook = ""
+    # The Discord webhook URL to send Minecraft events (such as joins and leaves) to
+    event_webhook = ""
     # The ID of the channel to listen for messages to send to Minecraft.
     message_channel = ""
 
