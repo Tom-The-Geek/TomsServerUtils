@@ -43,7 +43,6 @@ object HomesSpec : ConfigSpec() {
     val allowCrossDimension by required<Boolean>()
     val maxHomeAmount by required<Int>()
     val maxHomesPerDimension by required<Boolean>()
-    val homeDelay by required<Int>()
 }
 
 fun loadConfig(configDir: Path): Config {
