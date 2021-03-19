@@ -25,7 +25,9 @@
     "serverutils.mixins.json"
   ],
   "depends": {
-    "fabricloader": "*"
+    "fabricloader": "*",
+    "fabric": ">=0.26.3",
+    "fabric-language-kotlin": ">=1.4.30"
   },
   "custom": {
     "cardinal-components": [
