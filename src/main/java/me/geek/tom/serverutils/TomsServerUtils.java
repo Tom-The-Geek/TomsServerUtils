@@ -37,7 +37,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class TomsServerUtils implements ModInitializer {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public static final String MOD_ID = "toms-server-utils";
     @SuppressWarnings({"unused", "RedundantSuppression"})
