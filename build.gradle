@@ -50,7 +50,7 @@ repositories {
 	}
 	maven {
 		name = "Ladysnake Libs"
-		url = 'https://dl.bintray.com/ladysnake/libs'
+		url = 'https://ladysnake.jfrog.io/artifactory/mods'
 	}
 	maven {
 		name = "Nucleoid"
@@ -76,8 +76,6 @@ dependencies {
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	modApi "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
-
-	modRuntime "io.github.prospector:modmenu:${project.modmenu_version}"
 
 	shade("net.dv8tion:JDA:${project.jda_version}") {
 		exclude module: 'opus-java'
