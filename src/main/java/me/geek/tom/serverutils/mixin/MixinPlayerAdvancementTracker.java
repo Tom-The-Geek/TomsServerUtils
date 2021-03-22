@@ -2,6 +2,7 @@ package me.geek.tom.serverutils.mixin;
 
 import me.geek.tom.serverutils.TomsServerUtils;
 import net.minecraft.advancement.Advancement;
+import net.minecraft.advancement.AdvancementDisplay;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.PlayerAdvancementTracker;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -19,7 +20,9 @@ public class MixinPlayerAdvancementTracker {
 
     @Inject(method = "grantCriterion", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;broadcastChatMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/MessageType;Ljava/util/UUID;)V"))
     private void hook_grantCriterion(Advancement advancement, String criterionName, CallbackInfoReturnable<Boolean> cir) {
-        AdvancementFrame frame = advancement.getDisplay().getFrame();
+        AdvancementDisplay display = advancement.getDisplay();
+        if (display == null) return;
+        AdvancementFrame frame = display.getFrame();
         Text message = new TranslatableText("chat.type.advancement." + frame.getId(), this.owner.getDisplayName(), advancement.toHoverableText());
         TomsServerUtils.onPlayerAnnouncement(this.owner, message, frame == AdvancementFrame.CHALLENGE ? 0xAA00AA : 0x55FF55);
     }

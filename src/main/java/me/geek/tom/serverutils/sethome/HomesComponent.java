@@ -18,6 +18,8 @@ public interface HomesComponent extends PlayerComponent<HomesComponent> {
 
     @NotNull Home createNewHome(@NotNull String name, @NotNull RegistryKey<World> dimension, @NotNull BlockPos pos) throws CommandSyntaxException;
     void removeHome(@NotNull Home home);
+    @SuppressWarnings("unused")
     void removeHomeByName(@NotNull String name) throws CommandSyntaxException;
+    @SuppressWarnings("unused")
     void removeHomesInDimension(@NotNull RegistryKey<World> dimension);
 }

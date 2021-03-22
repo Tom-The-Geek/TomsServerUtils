@@ -1,5 +1,6 @@
 package me.geek.tom.serverutils.commands;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -21,6 +22,7 @@ import static com.mojang.brigadier.arguments.StringArgumentType.string;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
+@SuppressWarnings("SameReturnValue")
 public class HomeCommand {
     private static final SimpleCommandExceptionType NOT_ALLOWED_CROSS_DIM = new SimpleCommandExceptionType(new TranslatableText("serverutils.home.tp.denied.cross-dimension"));
 
@@ -41,7 +43,7 @@ public class HomeCommand {
         component.removeHome(home);
         ctx.getSource().sendFeedback(new TranslatableText("serverutils.home.deleted", home.getName()), false);
 
-        return 0;
+        return Command.SINGLE_SUCCESS;
     }
 
     private static int tpToHome(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
@@ -51,7 +53,7 @@ public class HomeCommand {
         home.teleport(player);
         ctx.getSource().sendFeedback(new TranslatableText("serverutils.teleported", home.getName()), false);
 
-        return 0;
+        return Command.SINGLE_SUCCESS;
     }
 
     private static int createHome(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
@@ -60,7 +62,7 @@ public class HomeCommand {
         Home home = component.createNewHome(getString(ctx, "name"), player.getServerWorld().getRegistryKey(), player.getBlockPos());
         ctx.getSource().sendFeedback(new TranslatableText("serverutils.home.created", home.getName()), false);
 
-        return 0;
+        return Command.SINGLE_SUCCESS;
     }
 
     private static int listHomes(CommandContext<ServerCommandSource> ctx, boolean all) throws CommandSyntaxException {
@@ -75,6 +77,6 @@ public class HomeCommand {
         ctx.getSource().sendFeedback(header, false);
         homes.stream().map(h -> h.toMessage(player)).forEach(text -> ctx.getSource().sendFeedback(text, false));
 
-        return 0;
+        return Command.SINGLE_SUCCESS;
     }
 }

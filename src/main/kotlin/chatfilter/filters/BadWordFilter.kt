@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package me.geek.tom.serverutils.chatfilter.filters
 
 import com.google.gson.Gson

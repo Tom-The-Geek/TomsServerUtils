@@ -3,6 +3,7 @@ package me.geek.tom.serverutils.chatfilter.api;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@SuppressWarnings("unused")
 public class GlobalMethods {
 
     private static final Logger LOGGER = LogManager.getLogger();

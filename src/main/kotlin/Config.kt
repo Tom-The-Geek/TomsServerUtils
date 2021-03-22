@@ -71,12 +71,6 @@ class HomesConfig(
     val maxHomesPerDimension get() = config[HomesSpec.maxHomesPerDimension]
 }
 
-class ChatFilterConfig(
-    private val config: ConfigSpec
-) {
-
-}
-
 fun loadCrashHelper(config: Config): CrashReportHelper {
     if (!config[GeneralSpec.crashReportsEnabled]) {
         return CrashReportHelper.Noop()
