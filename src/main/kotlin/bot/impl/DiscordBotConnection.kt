@@ -162,7 +162,9 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
         val minecraftMessage = FabricServerAudiences.of(this.server!!).toNative(
                 Component.join(Component.text(": "), username, message))
 
-        this.server?.playerManager?.broadcastChatMessage(minecraftMessage, MessageType.CHAT, Util.NIL_UUID)
+        this.server?.submit {
+            this.server?.playerManager?.broadcastChatMessage(minecraftMessage, MessageType.CHAT, Util.NIL_UUID)
+        }
     }
 
     override fun onBroadcast(text: Text) {
