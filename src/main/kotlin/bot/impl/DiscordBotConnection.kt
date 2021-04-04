@@ -74,12 +74,12 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
     }
 
     override fun disconnect() {
-        if (minecraftSerializer != null) {
-            minecraftSerializer = null
-        }
         if (jda != null) {
             jda!!.shutdown()
             jda = null
+        }
+        if (minecraftSerializer != null) {
+            minecraftSerializer = null
         }
         if (chatWebhookClient != null) {
             chatWebhookClient!!.close()
