@@ -1,8 +1,8 @@
 plugins {
-	id 'fabric-loom' version '0.5.42'
-	id 'maven-publish'
+	id "fabric-loom" version "0.5.42"
+	id "maven-publish"
 	id "org.jetbrains.kotlin.jvm" version "1.4.10"
-	id 'com.github.johnrengelman.shadow' version '6.1.0'
+	id "com.github.johnrengelman.shadow" version "6.1.0"
 	id "com.modrinth.minotaur" version "1.1.0"
 }
 
@@ -41,16 +41,16 @@ configurations {
 repositories {
 	jcenter()
 	maven {
-		name = 'Vankka'
-		url = 'https://nexus.vankka.dev/repository/maven-public/'
+		name = "Vankka"
+		url = "https://nexus.vankka.dev/repository/maven-public/"
 	}
 	maven {
-		name = 'sonatype-oss'
-		url = 'https://oss.sonatype.org/content/repositories/snapshots/'
+		name = "sonatype-oss"
+		url = "https://oss.sonatype.org/content/repositories/snapshots/"
 	}
 	maven {
 		name = "Ladysnake Libs"
-		url = 'https://dl.bintray.com/ladysnake/libs'
+		url = "https://dl.bintray.com/ladysnake/libs"
 	}
 	maven {
 		name = "Nucleoid"
@@ -78,7 +78,7 @@ dependencies {
 	modApi "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
 	shade("net.dv8tion:JDA:${project.jda_version}") {
-		exclude module: 'opus-java'
+		exclude module: "opus-java"
 	}
 
 	// Cardinal Components
@@ -87,16 +87,16 @@ dependencies {
 	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cardinal_components_version}"
 	include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cardinal_components_version}"
 
-	shade 'dev.vankka:MCDiscordReserializer:4.1.1-SNAPSHOT'
-	shade 'dev.vankka:SimpleAST:2.2.4-SNAPSHOT'
-	modImplementation 'net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT'
-	include 'net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT'
-	include 'ca.stellardrift:colonel:0.1'
-	include 'net.kyori:adventure-api:4.2.0'
-	include 'net.kyori:adventure-platform-api:4.0.0-SNAPSHOT'
-	include 'net.kyori:adventure-text-feature-pagination:4.0.0-SNAPSHOT'
-	include 'net.kyori:adventure-text-serializer-gson:4.2.0'
-	include 'net.kyori:adventure-text-serializer-plain:4.2.0'
+	shade "dev.vankka:MCDiscordReserializer:4.1.1-SNAPSHOT"
+	shade "dev.vankka:SimpleAST:2.2.4-SNAPSHOT"
+	modImplementation "net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT"
+	include "net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT"
+	include "ca.stellardrift:colonel:0.1"
+	include "net.kyori:adventure-api:4.2.0"
+	include "net.kyori:adventure-platform-api:4.0.0-SNAPSHOT"
+	include "net.kyori:adventure-text-feature-pagination:4.0.0-SNAPSHOT"
+	include "net.kyori:adventure-text-serializer-gson:4.2.0"
+	include "net.kyori:adventure-text-serializer-plain:4.2.0"
 
 	shade "club.minnced:discord-webhooks:${project.webhooks_version}"
 	shade "com.uchuhimo:konf-toml:${project.konf_version}"
@@ -151,31 +151,31 @@ shadowJar {
 
 	configurations = [ project.configurations.shade, project.configurations.modShade ]
 	classifier = "dev-all"
-	exclude("kotlin/**", 'kotlinx/**', 'javax/**', "META-INF")
-	exclude 'org/checkerframework/**', 'org/jetbrains/**', 'org/intellij/**'
-	exclude 'com/google/gson/**'
-	exclude 'net/kyori/**'
-	exclude 'org/slf4j/**'
+	exclude("kotlin/**", "kotlinx/**", "javax/**", "META-INF")
+	exclude "org/checkerframework/**", "org/jetbrains/**", "org/intellij/**"
+	exclude "com/google/gson/**"
+	exclude "net/kyori/**"
+	exclude "org/slf4j/**"
 
-	def relocPath = 'me.geek.tom.serverutils.libs.'
-	relocate 'com.iwebpp.crypto', relocPath + 'com.iwebpp.crypto'
-	relocate 'net.dv8tion.jda', relocPath + 'net.dv8tion.jda'
-	relocate 'com.neovisionaries', relocPath + 'com.neovisionaries'
-	relocate 'okhttp3', relocPath + 'okhttp3'
-	relocate 'okio', relocPath + 'okio'
-	relocate 'org.apache.commons.lang3', relocPath + 'org.apache.commons.lang3'
-	relocate 'org.apache.commons.collections4', relocPath + 'org.apache.commons.collections4'
-	relocate 'org.apache.commons.text', relocPath + 'org.apache.commons.text'
-	relocate 'club.minnced.discord', relocPath + 'club.minnced.discord'
-	relocate 'org.json', relocPath + 'org.json'
-	relocate 'com.uchuhimo.konf', relocPath + 'com.uchuhimo.konf'
-	relocate 'com.fasterxml', relocPath + 'com.fasterxml'
-	relocate 'com.moandjiezana.toml', relocPath + 'com.moandjiezana.toml'
-	relocate 'dev.vankka', relocPath + 'dev.vankka'
-	relocate 'org.reflections', relocPath + 'org.reflections'
-	relocate 'gnu.trove', relocPath + 'gnu.trove'
-	relocate 'javassist', relocPath + 'javassist'
-	relocate 'org.mozilla', relocPath + 'org.mozilla'
+	def relocPath = "me.geek.tom.serverutils.libs."
+	relocate "com.iwebpp.crypto", relocPath + "com.iwebpp.crypto"
+	relocate "net.dv8tion.jda", relocPath + "net.dv8tion.jda"
+	relocate "com.neovisionaries", relocPath + "com.neovisionaries"
+	relocate "okhttp3", relocPath + "okhttp3"
+	relocate "okio", relocPath + "okio"
+	relocate "org.apache.commons.lang3", relocPath + "org.apache.commons.lang3"
+	relocate "org.apache.commons.collections4", relocPath + "org.apache.commons.collections4"
+	relocate "org.apache.commons.text", relocPath + "org.apache.commons.text"
+	relocate "club.minnced.discord", relocPath + "club.minnced.discord"
+	relocate "org.json", relocPath + "org.json"
+	relocate "com.uchuhimo.konf", relocPath + "com.uchuhimo.konf"
+	relocate "com.fasterxml", relocPath + "com.fasterxml"
+	relocate "com.moandjiezana.toml", relocPath + "com.moandjiezana.toml"
+	relocate "dev.vankka", relocPath + "dev.vankka"
+	relocate "org.reflections", relocPath + "org.reflections"
+	relocate "gnu.trove", relocPath + "gnu.trove"
+	relocate "javassist", relocPath + "javassist"
+	relocate "org.mozilla", relocPath + "org.mozilla"
 }
 
 remapJar {
@@ -185,12 +185,12 @@ remapJar {
 
 task publishModrinth(type: TaskModrinthUpload, dependsOn: remapJar) {
 	token = ENV["MODRINTH_TOKEN"]
-	projectId = 'ul4zTWk4'
+	projectId = "ul4zTWk4"
 	versionNumber = project.version
 	uploadFile = remapJar // This is the java jar task
-	addGameVersion('1.16.4')
-	addGameVersion('1.16.5')
-	addLoader('fabric')
+	addGameVersion("1.16.4")
+	addGameVersion("1.16.5")
+	addLoader("fabric")
 }
 
 // configure the maven publication
