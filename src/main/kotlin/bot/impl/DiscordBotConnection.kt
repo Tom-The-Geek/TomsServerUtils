@@ -19,6 +19,8 @@ import me.geek.tom.serverutils.discord.MentionToMinecraftRenderer
 import me.geek.tom.serverutils.ducks.IPlayerAccessor
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
+import net.dv8tion.jda.api.entities.Activity
+import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.kyori.adventure.platform.fabric.FabricServerAudiences
@@ -164,6 +166,12 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
 
         this.server?.submit {
             this.server?.playerManager?.broadcastChatMessage(minecraftMessage, MessageType.CHAT, Util.NIL_UUID)
+        }
+    }
+
+    override fun onReady(event: ReadyEvent) {
+        if (config[DiscordBotSpec.presenceEnabled]) {
+            event.jda.presence.activity = Activity.watching("over the server!")
         }
     }
 

@@ -13,6 +13,7 @@ object DiscordBotSpec : ConfigSpec() {
     val chatWebhook by required<String>()
     val eventWebhook by required<String>()
     val messageChannel by required<String>()
+    val presenceEnabled by required<Boolean>()
     val serverIcon by required<String>()
 
     object AllowedMentions : ConfigSpec() {

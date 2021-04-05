@@ -16,7 +16,8 @@
     event_webhook = ""
     # The ID of the channel to listen for messages to send to Minecraft.
     message_channel = ""
-
+    # Should the bot set it's status to 'Watching over the server' (//TODO: Add custom status)
+    presence_enabled = true
     # The icon to use for server messages (join, leave, etc)
     # Default is a grass block icon.
     server_icon = "https://static.wikia.nocookie.net/minecraft_gamepedia/images/9/93/Grass_Block_JE7_BE6.png/revision/latest?cb=20200830143209&format=original"
