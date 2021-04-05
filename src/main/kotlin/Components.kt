@@ -1,0 +1,20 @@
+package me.geek.tom.serverutils
+
+import dev.onyxstudios.cca.api.v3.component.ComponentRegistry
+import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry
+import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer
+import me.geek.tom.serverutils.homes.HomesComponentImpl
+import me.geek.tom.serverutils.sethome.HomesComponent
+import nerdhub.cardinal.components.api.util.RespawnCopyStrategy
+import net.minecraft.util.Identifier
+
+class Components : EntityComponentInitializer {
+    companion object {
+        val HOMES = ComponentRegistry.getOrCreate(Identifier(MOD_ID, "homes"), HomesComponent::class.java)
+    }
+
+    override fun registerEntityComponentFactories(registry: EntityComponentFactoryRegistry) {
+        registry.registerForPlayers(HOMES, ::HomesComponentImpl, RespawnCopyStrategy.ALWAYS_COPY
+        )
+    }
+}

@@ -7,10 +7,10 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.Dynamic
 import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import me.geek.tom.serverutils.TomsServerUtils
 import me.geek.tom.serverutils.chatfilter.ChatFilter
 import me.geek.tom.serverutils.chatfilter.api.GlobalMethods
 import me.geek.tom.serverutils.chatfilter.api.impl.ScriptRequirementsImpl
+import me.geek.tom.serverutils.configDir
 import net.minecraft.server.MinecraftServer
 import org.apache.commons.io.FileUtils
 import org.apache.logging.log4j.LogManager
@@ -61,7 +61,7 @@ class ScriptFilter(
             "setMessageOk", "debug"
         ), GlobalMethods::class.java, ScriptableObject.CONST)
 
-        cx.evaluateReader(scope, Files.newBufferedReader(this.config.getScriptPath(TomsServerUtils.getConfigDir().resolve("scripts"))),
+        cx.evaluateReader(scope, Files.newBufferedReader(this.config.getScriptPath(configDir.resolve("scripts"))),
             this.getName(), 1, null)
 
         Context.exit()

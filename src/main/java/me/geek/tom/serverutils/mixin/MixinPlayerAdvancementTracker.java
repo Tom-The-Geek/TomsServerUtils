@@ -1,6 +1,5 @@
 package me.geek.tom.serverutils.mixin;
 
-import me.geek.tom.serverutils.TomsServerUtils;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementDisplay;
 import net.minecraft.advancement.AdvancementFrame;
@@ -14,6 +13,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static me.geek.tom.serverutils.ServerUtils2ElectricBoogalooKt.onPlayerAnnouncement;
+
 @Mixin(PlayerAdvancementTracker.class)
 public class MixinPlayerAdvancementTracker {
     @Shadow private ServerPlayerEntity owner;
@@ -24,6 +25,6 @@ public class MixinPlayerAdvancementTracker {
         if (display == null) return;
         AdvancementFrame frame = display.getFrame();
         Text message = new TranslatableText("chat.type.advancement." + frame.getId(), this.owner.getDisplayName(), advancement.toHoverableText());
-        TomsServerUtils.onPlayerAnnouncement(this.owner, message, frame == AdvancementFrame.CHALLENGE ? 0xAA00AA : 0x55FF55);
+        onPlayerAnnouncement(this.owner, message, frame == AdvancementFrame.CHALLENGE ? 0xAA00AA : 0x55FF55);
     }
 }

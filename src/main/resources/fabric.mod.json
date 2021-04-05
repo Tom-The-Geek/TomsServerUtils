@@ -13,7 +13,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "me.geek.tom.serverutils.TomsServerUtils"
+      "me.geek.tom.serverutils.ServerUtils2ElectricBoogaloo"
     ],
     "client": [],
     "server": [],

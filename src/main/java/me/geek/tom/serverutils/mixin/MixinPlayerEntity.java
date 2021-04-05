@@ -1,6 +1,5 @@
 package me.geek.tom.serverutils.mixin;
 
-import me.geek.tom.serverutils.TomsServerUtils;
 import me.geek.tom.serverutils.ducks.IPlayerAccessor;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -10,6 +9,8 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+
+import static me.geek.tom.serverutils.ServerUtils2ElectricBoogalooKt.HAT_DISPLAY_MASK;
 
 @Mixin(PlayerEntity.class)
 public abstract class MixinPlayerEntity extends LivingEntity implements IPlayerAccessor {
@@ -21,6 +22,6 @@ public abstract class MixinPlayerEntity extends LivingEntity implements IPlayerA
 
     @Override
     public boolean serverutils_showHat() {
-        return (this.getDataTracker().get(PLAYER_MODEL_PARTS) & TomsServerUtils.HAT_DISPLAY_MASK) != 0;
+        return (this.getDataTracker().get(PLAYER_MODEL_PARTS) & HAT_DISPLAY_MASK) != 0;
     }
 }
