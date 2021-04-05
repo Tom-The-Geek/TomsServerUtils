@@ -1,0 +1,52 @@
+//buildscript {
+//    repositories {
+//        mavenCentral()
+//        maven {
+//            url = "https://m2.dv8tion.net/releases"
+//        }
+//    }
+//    dependencies {
+//        classpath "club.minnced:discord-webhooks:0.5.6"
+//    }
+//}
+
+
+import groovy.json.JsonOutput
+
+def ENV = System.getenv()
+
+task release_webhook(dependsOn: publishModrinth) {
+    doLast {
+        String id = tasks.publishModrinth.uploadInfo.id
+        String changelog = ENV["CHANGELOG"]
+
+        String webhook_message = JsonOutput.toJson([
+            username: "Mod Updates",
+            avatar_url: "https://cdn.discordapp.com/attachments/813009929744678933/828641737920348210/crash_avatar.png",
+            embeds: [
+                    [
+                        author: [
+                            name: "TomsServerUtils"
+                        ],
+                        title: "TomsServerUtils v${project.version} released!",
+                        color: 0x3166b0,
+                        fields: [
+                                [
+                                    name: "Changes",
+                                    value: changelog,
+                                    inline: false
+                                ],
+                                [
+                                    name: "Downloads",
+                                    value: "<:modrinth:814242433986330644> [Modrinth](https://modrinth.com/mod/toms-server-utils/version/${id})\n<:github:814242466999304233> [GitHub](https://github.com/Geek202/TomsServerUtils/releases/tag/v0.4.0)",
+                                    inline: false
+                                ]
+                        ]
+                    ]
+            ]
+        ])
+
+        file("webhook_data.json").write(webhook_message)
+        "./send_webhook.sh".execute()
+    }
+}

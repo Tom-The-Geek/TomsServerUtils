@@ -200,6 +200,8 @@ task publishModrinth(type: TaskModrinthUpload, dependsOn: remapJar) {
 	addLoader("fabric")
 }
 
+apply from: "release_notifications.gradle"
+
 // configure the maven publication
 publishing {
 	publications {
