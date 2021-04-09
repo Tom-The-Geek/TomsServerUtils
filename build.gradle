@@ -1,5 +1,5 @@
 plugins {
-	id "fabric-loom" version "0.5.42"
+	id "fabric-loom" version "0.6.55"
 	id "maven-publish"
 	id "org.jetbrains.kotlin.jvm" version "1.4.10"
 	id "com.github.johnrengelman.shadow" version "6.1.0"
@@ -39,7 +39,10 @@ configurations {
 }
 
 repositories {
-	jcenter()
+	maven {
+		name = "m2-dv8tion"
+		url = "https://m2.dv8tion.net/releases"
+	}
 	maven {
 		name = "Vankka"
 		url = "https://nexus.vankka.dev/repository/maven-public/"
@@ -50,7 +53,7 @@ repositories {
 	}
 	maven {
 		name = "Ladysnake Libs"
-		url = "https://dl.bintray.com/ladysnake/libs"
+		url = "https://ladysnake.jfrog.io/artifactory/mods"
 	}
 	maven {
 		name = "Nucleoid"
