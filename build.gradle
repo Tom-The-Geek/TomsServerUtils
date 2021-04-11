@@ -101,7 +101,7 @@ dependencies {
 	shade "dev.vankka:SimpleAST:2.2.4-SNAPSHOT"
 	modImplementation "net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT"
 	include "net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT"
-	include "ca.stellardrift:colonel:0.1"
+	include "ca.stellardrift:colonel:0.2"
 	include "net.kyori:adventure-api:4.2.0"
 	include "net.kyori:adventure-platform-api:4.0.0-SNAPSHOT"
 	include "net.kyori:adventure-text-feature-pagination:4.0.0-SNAPSHOT"
