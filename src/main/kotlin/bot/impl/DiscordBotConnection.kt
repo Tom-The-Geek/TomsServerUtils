@@ -15,6 +15,7 @@ import me.geek.tom.serverutils.DiscordBotSpec
 import me.geek.tom.serverutils.MiscSpec
 import me.geek.tom.serverutils.bot.BotConnection
 import me.geek.tom.serverutils.clickToCopy
+import me.geek.tom.serverutils.discord.DiscordCommandManager
 import me.geek.tom.serverutils.discord.MentionToMinecraftRenderer
 import me.geek.tom.serverutils.ducks.IPlayerAccessor
 import net.dv8tion.jda.api.JDA
@@ -47,6 +48,8 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
             .withParseUsers(this.config[DiscordBotSpec.AllowedMentions.users])
             .withParseRoles(this.config[DiscordBotSpec.AllowedMentions.roles])
     }
+
+    private val commandManager: DiscordCommandManager = DiscordCommandManager(config)
 
     override fun connect(server: MinecraftServer) {
         this.jda = JDABuilder.createDefault(this.config[DiscordBotSpec.token])
@@ -154,6 +157,11 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
 
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         if (event.channel.id != this.config[DiscordBotSpec.messageChannel] || event.author.isBot) return
+
+        // Try running a command before proxying the chat
+        if (commandManager.handleMessage(this.server!!, event.message)) {
+            return
+        }
 
         val message = minecraftSerializer!!.serialize(event.message.contentRaw)
 

@@ -21,6 +21,11 @@ object DiscordBotSpec : ConfigSpec() {
         val users by required<Boolean>()
         val roles by required<Boolean>()
     }
+
+    object Commands : ConfigSpec() {
+        val enableList by required<Boolean>()
+        val enableIngameCommands by required<Boolean>()
+    }
 }
 
 object MiscSpec : ConfigSpec() {

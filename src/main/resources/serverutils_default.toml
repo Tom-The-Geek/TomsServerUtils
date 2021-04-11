@@ -22,6 +22,14 @@
     # Default is a grass block icon.
     server_icon = "https://static.wikia.nocookie.net/minecraft_gamepedia/images/9/93/Grass_Block_JE7_BE6.png/revision/latest?cb=20200830143209&format=original"
 
+# Settings for the commands available through Discord
+# The command prefix in Discord is / and in game commands can be accessed with the prefix //
+[discordBot.commands]
+    # Should the list/online/players command be enabled
+    enable_list = true
+    # Should integration for console commands be enabled (only for members with MANAGE_MESSAGES).
+    enable_ingame_commands = true
+
 # Allowed mentions for chat messages being forwarded to Discord
 [discordBot.allowedMentions]
     # Allow @everyone and @here
