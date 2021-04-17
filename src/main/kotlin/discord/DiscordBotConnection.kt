@@ -42,8 +42,6 @@ class DiscordBotConnection(private val config: Config) : BotConnection {
             .withParseRoles(this.config[DiscordBotSpec.AllowedMentions.roles])
     }
 
-//    private val commandManager: DiscordCommandManager = DiscordCommandManager(config)
-
     override suspend fun connect(server: MinecraftServer) {
         this.jda = ExtensibleBot(this.config[DiscordBotSpec.token]) {
             if (config[DiscordBotSpec.presenceEnabled]) {
@@ -156,34 +154,6 @@ class DiscordBotConnection(private val config: Config) : BotConnection {
             .build()
         this.eventWebhookClient?.send(webhookMessage)
     }
-
-//    override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
-//        if (event.channel.id != this.config[DiscordBotSpec.messageChannel] || event.author.isBot) return
-//
-//        // Try running a command before proxying the chat
-//        if (commandManager.handleMessage(this.server!!, event.message)) {
-//            return
-//        }
-//
-//        val message = minecraftSerializer!!.serialize(event.message.contentRaw)
-//
-//        val username = Component.text("@" + (event.member?.nickname?: event.author.name))
-//            .color(TextColor.color(event.member?.colorRaw?: 0xFFFFFF))
-//            .clickToCopy("Copy mention", "<@${event.author.idLong}>")
-//
-//        val minecraftMessage = FabricServerAudiences.of(this.server!!).toNative(
-//                Component.join(Component.text(": "), username, message))
-//
-//        this.server?.submit {
-//            this.server?.playerManager?.broadcastChatMessage(minecraftMessage, MessageType.CHAT, Util.NIL_UUID)
-//        }
-//    }
-
-//    override fun onReady(event: ReadyEvent) {
-//        if (config[DiscordBotSpec.presenceEnabled]) {
-//            event.jda.presence.activity = Activity.watching("over the server!")
-//        }
-//    }
 
     override fun onBroadcast(text: Text) {
         val component = FabricServerAudiences.of(this.server).toAdventure(text)

@@ -1,13 +1,13 @@
 package me.geek.tom.serverutils.discord
 
-import dev.kord.core.behavior.channel.TextChannelBehavior
+import dev.kord.core.behavior.channel.MessageChannelBehavior
 import kotlinx.coroutines.runBlocking
 import net.minecraft.server.command.CommandOutput
 import net.minecraft.text.Text
 import java.util.*
 
 class DiscordCommandOutput(
-    private val channel: TextChannelBehavior,
+    private val channel: MessageChannelBehavior,
 ) : CommandOutput {
     override fun sendSystemMessage(message: Text, senderUuid: UUID) {
         runBlocking {
