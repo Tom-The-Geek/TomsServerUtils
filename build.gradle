@@ -11,7 +11,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
 def ENV = System.getenv()
-version = project.mod_version + ".local"
+version = project.mod_version + "+local"
 if (ENV.VERSION) {
 	version = ENV.VERSION
 	version = version.substring(version.lastIndexOf("/") + 1 + 1) // remove the '/' and the 'v'
@@ -167,24 +167,27 @@ shadowJar {
 	exclude "org/slf4j/**"
 
 	def relocPath = "me.geek.tom.serverutils.libs."
-	relocate "com.iwebpp.crypto", relocPath + "com.iwebpp.crypto"
-	relocate "net.dv8tion.jda", relocPath + "net.dv8tion.jda"
-	relocate "com.neovisionaries", relocPath + "com.neovisionaries"
+	relocate "club.minnced.discord", relocPath + "club.minnced.discord"
+	relocate "com.fasterxml", relocPath + "com.fasterxml"
+	relocate "com.kotlindiscord", relocPath + "com.kotlindiscord"
+	relocate "com.moandjiezana.toml", relocPath + "com.moandjiezana.toml"
+	relocate "com.uchuhimo.konf", relocPath + "com.uchuhimo.konf"
+	relocate "dev.kord", relocPath + "dev.kord"
+	relocate "dev.vankka", relocPath + "dev.vankka"
+	relocate "io.ktor", relocPath + "io.ktor"
+	// Note: I am not using sentry in this mod, kordex has dependency on it as it has optional integration
+	relocate "io.sentry", relocPath + "io.sentry"
+	relocate "javassist", relocPath + "javassist"
+//	This broke stuff TODO: fix
+//	relocate "mu", relocPath + "mu"
+	relocate "net.time4j", relocPath + "net.time4j"
 	relocate "okhttp3", relocPath + "okhttp3"
 	relocate "okio", relocPath + "okio"
-	relocate "org.apache.commons.lang3", relocPath + "org.apache.commons.lang3"
-	relocate "org.apache.commons.collections4", relocPath + "org.apache.commons.collections4"
-	relocate "org.apache.commons.text", relocPath + "org.apache.commons.text"
-	relocate "club.minnced.discord", relocPath + "club.minnced.discord"
+	relocate "org.apache.commons", relocPath + "org.apache.commons"
 	relocate "org.json", relocPath + "org.json"
-	relocate "com.uchuhimo.konf", relocPath + "com.uchuhimo.konf"
-	relocate "com.fasterxml", relocPath + "com.fasterxml"
-	relocate "com.moandjiezana.toml", relocPath + "com.moandjiezana.toml"
-	relocate "dev.vankka", relocPath + "dev.vankka"
-	relocate "org.reflections", relocPath + "org.reflections"
-	relocate "gnu.trove", relocPath + "gnu.trove"
-	relocate "javassist", relocPath + "javassist"
+	relocate "org.koin", relocPath = "org.koin"
 	relocate "org.mozilla", relocPath + "org.mozilla"
+	relocate "org.reflections", relocPath + "org.reflections"
 }
 
 remapJar {
