@@ -15,6 +15,7 @@ import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializerOptions
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import me.geek.tom.serverutils.DiscordBotSpec
 import me.geek.tom.serverutils.MiscSpec
 import me.geek.tom.serverutils.bot.BotConnection
@@ -91,7 +92,8 @@ class DiscordBotConnection(private val config: Config) : BotConnection {
     }
 
     override suspend fun disconnect() {
-        jda.kord.shutdown()
+        jda.kord.logout()
+        jda.kord.cancel()
         if (minecraftSerializer != null) {
             minecraftSerializer = null
         }
