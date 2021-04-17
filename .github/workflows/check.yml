@@ -1,6 +1,14 @@
 name: Java CI with Gradle
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'src/**'
+      - '*.gradle'
+      - 'gradle.properties'
+      - 'gradlew*'
+      - 'gradle/**'
+  pull_request:
 
 jobs:
   build:
