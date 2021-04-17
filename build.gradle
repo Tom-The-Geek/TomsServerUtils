@@ -40,8 +40,8 @@ configurations {
 
 repositories {
 	maven {
-		name = "m2-dv8tion"
-		url = "https://m2.dv8tion.net/releases"
+		name = "Kotlin Discord"
+		url = "https://maven.kotlindiscord.com/repository/maven-public/"
 	}
 	maven {
 		name = "Vankka"
@@ -57,7 +57,8 @@ repositories {
 	}
 	maven {
 		name = "Nucleoid"
-		url = "https://maven.nucleoid.xyz/"
+//		url = "https://maven.nucleoid.xyz/"
+		url = "https://maven.tomthegeek.ml/" // temp fix while nucleoid maven is offline
 	}
 	maven {
 		name = "Jitpack"
@@ -84,9 +85,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	modApi "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
-	shade("net.dv8tion:JDA:${project.jda_version}") {
-		exclude module: "opus-java"
-	}
+	shade "com.kotlindiscord.kord.extensions:kord-extensions:${project.kordex_version}"
 
 	// Cardinal Components
 	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cardinal_components_version}"
