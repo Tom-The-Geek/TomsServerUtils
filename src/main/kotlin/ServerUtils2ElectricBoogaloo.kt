@@ -3,6 +3,10 @@ package me.geek.tom.serverutils
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.BoolArgumentType
 import com.mojang.brigadier.context.CommandContext
+import com.uchuhimo.konf.Config
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import me.geek.tom.serverutils.bot.BotConnection
 import me.geek.tom.serverutils.bot.loadBot
 import me.geek.tom.serverutils.chatfilter.ChatFilterManager
@@ -26,15 +30,17 @@ import net.minecraft.util.Formatting
 import net.minecraft.util.Util
 import net.minecraft.util.crash.CrashReport
 import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import java.io.File
+import java.nio.file.Path
 
 class ServerUtils2ElectricBoogaloo : ModInitializer {
     override fun onInitialize() {
         LOGGER.info("Initializing TomsServerUtils...")
-        val config = loadConfig(FabricLoader.getInstance().configDir)
-        homesConfig = HomesConfig(config)
-        connection = loadBot(config)
-        crashHelper = loadCrashHelper(config)
+        config = loadConfig(FabricLoader.getInstance().configDir)
+        homesConfig = HomesConfig(config!!)
+        connection = loadBot(config!!)
+        crashHelper = loadCrashHelper(config!!)
 
         // Only register the test crash commands in development. It should be obvious why we do this.
         if (FabricLoader.getInstance().isDevelopmentEnvironment) {
@@ -69,15 +75,18 @@ class ServerUtils2ElectricBoogaloo : ModInitializer {
     }
 }
 
-val LOGGER = LogManager.getLogger()
+val LOGGER: Logger = LogManager.getLogger()
 
 const val MOD_ID = "toms-server-utils"
+@Suppress("unused")
 const val MOD_NAME = "TomsServerUtils"
 
 /**
  * See [net.minecraft.client.render.entity.PlayerModelPart]
  */
 const val HAT_DISPLAY_MASK = 1 shl 6
+
+var config: Config? = null
 
 private var connection: BotConnection? = null
 private var crashHelper: CrashReportHelper? = null
@@ -102,8 +111,10 @@ fun crashed(report: CrashReport, saved: Boolean, file: File) {
 }
 
 fun starting(server: MinecraftServer) {
-    connection?.connect(server)
-    connection?.serverStarting(server)
+    GlobalScope.launch {
+        connection?.connect(server)
+        connection?.serverStarting(server) // this is inside the GlobalScope.launch block to ensure it is called after we have connected
+    }
     chatFilterManager.init(
         FabricLoader.getInstance().configDir.resolve("serverutils"),
         server
@@ -120,7 +131,9 @@ fun stopping(server: MinecraftServer) {
 
 fun stopped(server: MinecraftServer) {
     connection?.serverStopped(server)
-    connection?.disconnect()
+    runBlocking {
+        connection?.disconnect()
+    }
 }
 
 fun onPlayerAnnouncement(player: ServerPlayerEntity, text: Text, colour: Int) {
@@ -157,4 +170,4 @@ fun chat(netHandler: ServerPlayNetworkHandler, message: String): Boolean {
     return ok
 }
 
-val configDir by lazy { FabricLoader.getInstance().configDir.resolve("serverutils") }
+val configDir: Path by lazy { FabricLoader.getInstance().configDir.resolve("serverutils") }

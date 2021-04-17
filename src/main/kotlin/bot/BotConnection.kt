@@ -3,7 +3,7 @@ package me.geek.tom.serverutils.bot
 import com.mojang.authlib.GameProfile
 import com.uchuhimo.konf.Config
 import me.geek.tom.serverutils.GeneralSpec
-import me.geek.tom.serverutils.bot.impl.DiscordBotConnection
+import me.geek.tom.serverutils.discord.DiscordBotConnection
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
@@ -12,8 +12,8 @@ import net.minecraft.text.Text
 
 interface BotConnection {
 
-    fun connect(server: MinecraftServer)
-    fun disconnect()
+    suspend fun connect(server: MinecraftServer)
+    suspend fun disconnect()
 
     fun serverStarting(server: MinecraftServer)
     fun serverStarted(server: MinecraftServer)
@@ -29,8 +29,8 @@ interface BotConnection {
 }
 
 class NoopBotConnection : BotConnection {
-    override fun connect(server: MinecraftServer) { }
-    override fun disconnect() { }
+    override suspend fun connect(server: MinecraftServer) { }
+    override suspend fun disconnect() { }
     override fun serverStarting(server: MinecraftServer) { }
     override fun serverStarted(server: MinecraftServer) { }
     override fun serverStopping(server: MinecraftServer) { }

@@ -1,4 +1,4 @@
-package me.geek.tom.serverutils.bot.impl
+package me.geek.tom.serverutils.discord
 
 import club.minnced.discord.webhook.WebhookClient
 import club.minnced.discord.webhook.WebhookClientBuilder
@@ -6,41 +6,34 @@ import club.minnced.discord.webhook.send.AllowedMentions
 import club.minnced.discord.webhook.send.WebhookEmbed
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder
 import club.minnced.discord.webhook.send.WebhookMessageBuilder
+import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.utils.module
 import com.mojang.authlib.GameProfile
 import com.uchuhimo.konf.Config
 import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializerOptions
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import me.geek.tom.serverutils.DiscordBotSpec
 import me.geek.tom.serverutils.MiscSpec
 import me.geek.tom.serverutils.bot.BotConnection
-import me.geek.tom.serverutils.clickToCopy
-import me.geek.tom.serverutils.discord.DiscordCommandManager
-import me.geek.tom.serverutils.discord.MentionToMinecraftRenderer
+import me.geek.tom.serverutils.discord.extensions.MinecraftExtension
 import me.geek.tom.serverutils.ducks.IPlayerAccessor
-import net.dv8tion.jda.api.JDA
-import net.dv8tion.jda.api.JDABuilder
-import net.dv8tion.jda.api.entities.Activity
-import net.dv8tion.jda.api.events.ReadyEvent
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
-import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.kyori.adventure.platform.fabric.FabricServerAudiences
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextColor
-import net.minecraft.network.MessageType
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
-import net.minecraft.util.Util
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 
-class DiscordBotConnection(private val config: Config) : BotConnection, ListenerAdapter() {
+class DiscordBotConnection(private val config: Config) : BotConnection {
 
-    private var jda: JDA? = null
+    private lateinit var jda: ExtensibleBot
     private var chatWebhookClient: WebhookClient? = null
     private var eventWebhookClient: WebhookClient? = null
-    private var server: MinecraftServer? = null
+    private lateinit var server: MinecraftServer
     private var minecraftSerializer: MinecraftSerializer? = null
     private val allowedMentions by lazy {
         AllowedMentions.none()
@@ -49,12 +42,30 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
             .withParseRoles(this.config[DiscordBotSpec.AllowedMentions.roles])
     }
 
-    private val commandManager: DiscordCommandManager = DiscordCommandManager(config)
+    override suspend fun connect(server: MinecraftServer) {
+        this.jda = ExtensibleBot(this.config[DiscordBotSpec.token]) {
+            if (config[DiscordBotSpec.presenceEnabled]) {
+                presence {
+                    watching("over the server!")
+                }
 
-    override fun connect(server: MinecraftServer) {
-        this.jda = JDABuilder.createDefault(this.config[DiscordBotSpec.token])
-                .addEventListeners(this)
-                .build()
+            }
+
+            commands {
+                prefix { "/" }
+            }
+
+            extensions {
+                add(::MinecraftExtension)
+            }
+        }
+        this.jda.koin.module { single { server } }
+
+        @Suppress("DeferredResultUnused")
+        GlobalScope.async {
+            jda.start()
+        }
+
         if (this.config[DiscordBotSpec.chatWebhook].isNotEmpty()) {
             this.chatWebhookClient = WebhookClientBuilder(this.config[DiscordBotSpec.chatWebhook])
                 .setDaemon(true)
@@ -75,28 +86,17 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
         }
         this.server = server
         minecraftSerializer = MinecraftSerializer(MinecraftSerializerOptions.defaults()
-            .addRenderer(MentionToMinecraftRenderer(jda!!)))
+            .addRenderer(MentionToMinecraftRenderer(jda)))
     }
 
-    override fun disconnect() {
-        if (jda != null) {
-            jda!!.shutdown()
-            jda = null
-        }
+    override suspend fun disconnect() {
+        jda.kord.logout()
+        jda.kord.cancel()
         if (minecraftSerializer != null) {
             minecraftSerializer = null
         }
-        if (chatWebhookClient != null) {
-            chatWebhookClient!!.close()
-            chatWebhookClient = null
-        }
-        if (eventWebhookClient != null) {
-            eventWebhookClient!!.close()
-            eventWebhookClient = null
-        }
-        if (this.server != null) {
-            this.server = null
-        }
+        chatWebhookClient?.close()
+        eventWebhookClient?.close()
     }
 
     override fun serverStarting(server: MinecraftServer) {
@@ -155,36 +155,8 @@ class DiscordBotConnection(private val config: Config) : BotConnection, Listener
         this.eventWebhookClient?.send(webhookMessage)
     }
 
-    override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
-        if (event.channel.id != this.config[DiscordBotSpec.messageChannel] || event.author.isBot) return
-
-        // Try running a command before proxying the chat
-        if (commandManager.handleMessage(this.server!!, event.message)) {
-            return
-        }
-
-        val message = minecraftSerializer!!.serialize(event.message.contentRaw)
-
-        val username = Component.text("@" + (event.member?.nickname?: event.author.name))
-            .color(TextColor.color(event.member?.colorRaw?: 0xFFFFFF))
-            .clickToCopy("Copy mention", "<@${event.author.idLong}>")
-
-        val minecraftMessage = FabricServerAudiences.of(this.server!!).toNative(
-                Component.join(Component.text(": "), username, message))
-
-        this.server?.submit {
-            this.server?.playerManager?.broadcastChatMessage(minecraftMessage, MessageType.CHAT, Util.NIL_UUID)
-        }
-    }
-
-    override fun onReady(event: ReadyEvent) {
-        if (config[DiscordBotSpec.presenceEnabled]) {
-            event.jda.presence.activity = Activity.watching("over the server!")
-        }
-    }
-
     override fun onBroadcast(text: Text) {
-        val component = FabricServerAudiences.of(this.server!!).toAdventure(text)
+        val component = FabricServerAudiences.of(this.server).toAdventure(text)
         val message = DiscordSerializer.INSTANCE.serialize(component)
         val webhookMessage = WebhookMessageBuilder()
             .setAllowedMentions(allowedMentions)

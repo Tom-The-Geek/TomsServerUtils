@@ -18,3 +18,4 @@ Most of this mod is written in [Kotlin](https://kotlinlang.org) with only a few 
 - If adding to the config, ensure to add a value [in the defaults](https://github.com/Geek202/TomsServerUtils/blob/main/src/main/resources/serverutils_default.toml)
 - If adding literal strings displayed to players, please make use of the [translations file](https://github.com/Geek202/TomsServerUtils/blob/main/src/main/resources/data/toms-server-utils/lang/en_us.json) to ensure that they can be translated if wanted.
 - Try not to break anything :)
+- If Intellij complains about the command line being too long, move the project folder to be in less subdirectories, to make the path shorter.
