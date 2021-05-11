@@ -10,6 +10,7 @@ import java.io.File;
 
 import static me.geek.tom.serverutils.ServerUtils2ElectricBoogalooKt.crashed;
 
+@SuppressWarnings("unused")
 @Mixin(CrashReport.class)
 public class MixinCrashReport {
     @Inject(method = "writeToFile", at = @At("RETURN"))

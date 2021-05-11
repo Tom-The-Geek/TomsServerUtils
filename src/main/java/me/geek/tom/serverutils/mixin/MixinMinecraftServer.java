@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static me.geek.tom.serverutils.ServerUtils2ElectricBoogalooKt.*;
 
+@SuppressWarnings("unused")
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setupServer()Z"), method = "runServer")

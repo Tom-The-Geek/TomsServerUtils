@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import static me.geek.tom.serverutils.ServerUtils2ElectricBoogalooKt.join;
 import static me.geek.tom.serverutils.ServerUtils2ElectricBoogalooKt.leave;
 
+@SuppressWarnings("unused")
 @Mixin(PlayerManager.class)
 public class MixinPlayerManager {
     @Inject(method = "onPlayerConnect", at = @At("RETURN"))

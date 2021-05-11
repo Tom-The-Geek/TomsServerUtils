@@ -1,6 +1,5 @@
 package me.geek.tom.serverutils.sethome;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.onyxstudios.cca.api.v3.entity.PlayerComponent;
 import me.geek.tom.serverutils.homes.Home;
 import net.minecraft.util.math.BlockPos;
@@ -18,10 +17,10 @@ public interface HomesComponent extends PlayerComponent<HomesComponent> {
     @NotNull List<Home> getAllInDimension(@NotNull RegistryKey<World> dimension);
     @NotNull List<Home> getAllHomes();
 
-    @NotNull Home createNewHome(@NotNull String name, @NotNull RegistryKey<World> dimension, @NotNull BlockPos pos) throws CommandSyntaxException;
+    @NotNull Home createNewHome(@NotNull String name, @NotNull RegistryKey<World> dimension, @NotNull BlockPos pos);
     void removeHome(@NotNull Home home);
     @SuppressWarnings("unused")
-    void removeHomeByName(@NotNull String name) throws CommandSyntaxException;
+    void removeHomeByName(@NotNull String name);
     @SuppressWarnings("unused")
     void removeHomesInDimension(@NotNull RegistryKey<World> dimension);
 }

@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static me.geek.tom.serverutils.ServerUtils2ElectricBoogalooKt.onPlayerAnnouncement;
 
+@SuppressWarnings("unused")
 @Mixin(PlayerAdvancementTracker.class)
 public class MixinPlayerAdvancementTracker {
     @Shadow private ServerPlayerEntity owner;

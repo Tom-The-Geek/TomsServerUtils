@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import static me.geek.tom.serverutils.ServerUtils2ElectricBoogalooKt.onPlayerAnnouncement;
 
+@SuppressWarnings("unused")
 @Mixin(ServerPlayerEntity.class)
 public class MixinServerPlayerEntity {
     @Inject(method = "onDeath", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE",

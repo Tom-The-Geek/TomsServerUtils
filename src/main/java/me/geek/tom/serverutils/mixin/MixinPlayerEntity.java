@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import static me.geek.tom.serverutils.ServerUtils2ElectricBoogalooKt.HAT_DISPLAY_MASK;
 
+@SuppressWarnings("unused")
 @Mixin(PlayerEntity.class)
 public abstract class MixinPlayerEntity extends LivingEntity implements IPlayerAccessor {
     @Shadow @Final protected static TrackedData<Byte> PLAYER_MODEL_PARTS;
