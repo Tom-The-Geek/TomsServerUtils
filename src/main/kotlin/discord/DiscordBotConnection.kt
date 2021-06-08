@@ -7,12 +7,13 @@ import club.minnced.discord.webhook.send.WebhookEmbed
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder
 import club.minnced.discord.webhook.send.WebhookMessageBuilder
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.utils.module
 import com.mojang.authlib.GameProfile
 import com.uchuhimo.konf.Config
+import dev.kord.core.Kord
 import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializerOptions
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
@@ -27,6 +28,7 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
+import org.koin.dsl.module
 
 class DiscordBotConnection(private val config: Config) : BotConnection {
 
@@ -51,17 +53,19 @@ class DiscordBotConnection(private val config: Config) : BotConnection {
 
             }
 
-            commands {
+            messageCommands {
                 prefix { "/" }
             }
 
             extensions {
                 add(::MinecraftExtension)
             }
+
+            module { single { server } }
         }
-        this.jda.koin.module { single { server } }
 
         @Suppress("DeferredResultUnused")
+        @OptIn(DelicateCoroutinesApi::class)
         GlobalScope.async {
             jda.start()
         }
@@ -90,8 +94,9 @@ class DiscordBotConnection(private val config: Config) : BotConnection {
     }
 
     override suspend fun disconnect() {
-        jda.kord.logout()
-        jda.kord.cancel()
+        val kord = jda.getKoin().get<Kord>()
+        kord.logout()
+        kord.cancel()
         if (minecraftSerializer != null) {
             minecraftSerializer = null
         }

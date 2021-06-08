@@ -1,7 +1,7 @@
 package me.geek.tom.serverutils.discord.extensions
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.extensions.KoinExtension
+import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
+import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.utils.hasPermission
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.entity.Permission
@@ -28,9 +28,7 @@ import net.minecraft.util.math.Vec2f
 import net.minecraft.util.math.Vec3d
 import org.koin.core.component.inject
 
-class MinecraftExtension(
-    bot: ExtensibleBot,
-) : KoinExtension(bot) {
+class MinecraftExtension : Extension() {
     override val name = "Minecraft"
 
     private val minecraftSerializer = MinecraftSerializer(
@@ -38,13 +36,14 @@ class MinecraftExtension(
         .addRenderer(MentionToMinecraftRenderer(bot)))
 
     private val server: MinecraftServer by inject()
+    private val messageCommandRegistry: MessageCommandRegistry by inject()
 
     override suspend fun setup() {
         event<MessageCreateEvent> {
             check {
                 it.message.channel.id.asString == config!![DiscordBotSpec.messageChannel]
                         && it.message.author?.isBot == false
-                        && !it.message.content.startsWith(bot.messageCommands.getPrefix(it))
+                        && !it.message.content.startsWith(messageCommandRegistry.getPrefix(it))
             }
 
             action {
@@ -69,11 +68,11 @@ class MinecraftExtension(
                 check {
                     it.message.channel.id.asString == config!![DiscordBotSpec.messageChannel]
                             && it.message.author?.isBot == false
-                            && it.message.content.startsWith(bot.messageCommands.getPrefix(it) + "/")
+                            && it.message.content.startsWith(messageCommandRegistry.getPrefix(it) + "/")
                 }
 
                 action {
-                    val command = event.message.content.substring(bot.messageCommands.getPrefix(event).length + 1)
+                    val command = event.message.content.substring(messageCommandRegistry.getPrefix(event).length + 1)
                     val source = getCommandSource(server, event.message)
                     server.submit {
                         // TODO: Actually fix this
