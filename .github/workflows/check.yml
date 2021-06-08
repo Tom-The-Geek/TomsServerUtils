@@ -8,6 +8,7 @@ on:
       - 'gradle.properties'
       - 'gradlew*'
       - 'gradle/**'
+      - '.github/**'
   pull_request:
 
 jobs:
