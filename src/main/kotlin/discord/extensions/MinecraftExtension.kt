@@ -76,6 +76,7 @@ class MinecraftExtension(
                     val command = event.message.content.substring(bot.messageCommands.getPrefix(event).length + 1)
                     val source = getCommandSource(server, event.message)
                     server.submit {
+                        // TODO: Actually fix this
                         if (command == "stop" && source.hasPermissionLevel(4)) {
                             source.sendError(LiteralText("Warning: this may cause the server to hang on stop due to a bug that I haven't fixed yet - sorry"))
                         }
