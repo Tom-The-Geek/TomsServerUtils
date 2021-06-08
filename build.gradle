@@ -213,7 +213,7 @@ task publishModrinth(type: TaskModrinthUpload, dependsOn: remapJar) {
 	projectId = "ul4zTWk4"
 	versionNumber = project.version
 	uploadFile = remapJar // This is the java jar task
-	addGameVersion("1.17-pre2")
+	addGameVersion("1.17-rc2")
 	addLoader("fabric")
 }
 
