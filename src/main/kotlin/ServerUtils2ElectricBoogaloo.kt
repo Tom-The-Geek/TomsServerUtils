@@ -21,6 +21,7 @@ import net.minecraft.network.MessageType
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.command.CommandManager
 import net.minecraft.server.command.ServerCommandSource
+import net.minecraft.server.filter.TextStream
 import net.minecraft.server.network.ServerPlayNetworkHandler
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.LiteralText
@@ -148,9 +149,9 @@ fun leave(player: ServerPlayerEntity) {
     connection?.onPlayerLeave(player)
 }
 
-fun chat(netHandler: ServerPlayNetworkHandler, message: String): Boolean {
+fun chat(netHandler: ServerPlayNetworkHandler, message: TextStream.Message): Boolean {
     val player = netHandler.player
-    val failed = chatFilterManager.onChatMessage(message)
+    val failed = chatFilterManager.onChatMessage(message.filtered)
     val ok = failed.isEmpty()
     if (!ok) {
         val failedMessage = java.lang.String.join(", ", failed)
@@ -165,7 +166,7 @@ fun chat(netHandler: ServerPlayNetworkHandler, message: String): Boolean {
     }
     if (ok) {
         val showHat = (player as IPlayerAccessor).serverutils_showHat()
-        connection?.onChatMessage(player.gameProfile, showHat, message)
+        connection?.onChatMessage(player.gameProfile, showHat, message.filtered)
     }
     return ok
 }

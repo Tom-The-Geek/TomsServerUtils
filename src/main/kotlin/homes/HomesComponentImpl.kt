@@ -3,10 +3,9 @@ package me.geek.tom.serverutils.homes
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import me.geek.tom.serverutils.homesConfig
-import me.geek.tom.serverutils.sethome.HomesComponent
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtList
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
@@ -31,9 +30,7 @@ class HomesComponentImpl(player: PlayerEntity) : HomesComponent {
         return Collections.unmodifiableList(homesByWorld.computeIfAbsent(dimension.value) { ArrayList() })
     }
 
-    override fun getAllHomes(): List<Home> {
-        return Collections.unmodifiableList(homes)
-    }
+    override val allHomes: List<Home> get() = Collections.unmodifiableList(this.homes)
 
     override fun createNewHome(name: String, dimension: RegistryKey<World>, pos: BlockPos): Home {
         if (homesByName.containsKey(name)) throw HOME_EXISTS.create(name)
@@ -70,18 +67,18 @@ class HomesComponentImpl(player: PlayerEntity) : HomesComponent {
         removeHome(homesByName[name]!!)
     }
 
-    override fun removeHomesInDimension(dimension: RegistryKey<World?>) {
+    override fun removeHomesInDimension(dimension: RegistryKey<World>) {
         homesByWorld.computeIfAbsent(dimension.value) { ArrayList() }.forEach { home ->
             removeHome(home)
         }
     }
 
-    override fun readFromNbt(tag: CompoundTag) {
+    override fun readFromNbt(tag: NbtCompound) {
         homes.clear()
         homesByWorld.clear()
         homesByName.clear()
         val homes = tag.getList("Homes", 10)
-        homes.stream().map { t -> t as CompoundTag }.map(Home::read).forEach { home -> this.homes.add(home) }
+        homes.stream().map { t -> t as NbtCompound }.map(Home::read).forEach { home -> this.homes.add(home) }
 
         // Compute the maps for easier lookup
         this.homes.forEach(Consumer { h: Home ->
@@ -92,13 +89,13 @@ class HomesComponentImpl(player: PlayerEntity) : HomesComponent {
         })
     }
 
-    override fun writeToNbt(tag: CompoundTag) {
-        val homes = ListTag()
+    override fun writeToNbt(tag: NbtCompound) {
+        val homes = NbtList()
         this.homes.stream().map { home: Home ->
             home.write(
-                CompoundTag()
+                NbtCompound()
             )
-        }.forEach { e: CompoundTag -> homes.add(e) }
+        }.forEach { e: NbtCompound -> homes.add(e) }
         tag.put("Homes", homes)
     }
 

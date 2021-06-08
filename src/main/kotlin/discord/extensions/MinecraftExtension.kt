@@ -5,7 +5,8 @@ import com.kotlindiscord.kord.extensions.extensions.KoinExtension
 import com.kotlindiscord.kord.extensions.utils.hasPermission
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.entity.Permission
-import dev.kord.core.behavior.channel.MessageChannelBehavior
+import dev.kord.core.entity.Member
+import dev.kord.core.entity.Message
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializerOptions
@@ -68,15 +69,17 @@ class MinecraftExtension(
                 check {
                     it.message.channel.id.asString == config!![DiscordBotSpec.messageChannel]
                             && it.message.author?.isBot == false
-                            && (it.message.getAuthorAsMember()?.hasPermission(Permission.ManageGuild) == true
-                                || it.message.getAuthorAsMember()?.hasPermission(Permission.Administrator) == true)
                             && it.message.content.startsWith(bot.messageCommands.getPrefix(it) + "/")
                 }
 
                 action {
                     val command = event.message.content.substring(bot.messageCommands.getPrefix(event).length + 1)
+                    val source = getCommandSource(server, event.message)
                     server.submit {
-                        server.commandManager.execute(getCommandSource(server, event.message.channel), command)
+                        if (command == "stop" && source.hasPermissionLevel(4)) {
+                            source.sendError(LiteralText("Warning: this may cause the server to hang on stop due to a bug that I haven't fixed yet - sorry"))
+                        }
+                        server.commandManager.execute(source, command)
                     }
                 }
             }
@@ -100,18 +103,27 @@ class MinecraftExtension(
         }
     }
 
-    private fun getCommandSource(server: MinecraftServer, channel: MessageChannelBehavior): ServerCommandSource {
+    private suspend fun getCommandSource(server: MinecraftServer, message: Message): ServerCommandSource {
         val overworld = server.overworld
         return ServerCommandSource(
-            DiscordCommandOutput(channel),
+            DiscordCommandOutput(message.channel),
             if (overworld == null) Vec3d.ZERO else Vec3d.of(overworld.spawnPos),
             Vec2f.ZERO,
             overworld,
-            4,
+            getDiscordOpLevel(message.getAuthorAsMember()),
             "Discord",
             LiteralText("Discord"),
             server,
             null
         )
+    }
+
+    private suspend fun getDiscordOpLevel(member: Member?): Int {
+        return if (member?.hasPermission(Permission.ManageGuild) == true
+                || member?.hasPermission(Permission.Administrator) == true) {
+            4
+        } else {
+            0
+        }
     }
 }

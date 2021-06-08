@@ -2,7 +2,7 @@ package me.geek.tom.serverutils.homes
 
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import me.geek.tom.serverutils.homesConfig
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtHelper
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.ClickEvent
@@ -32,7 +32,7 @@ data class Home(
         return text
     }
 
-    fun write(tag: CompoundTag): CompoundTag {
+    fun write(tag: NbtCompound): NbtCompound {
         tag.putString("Name", name)
         tag.putString("Dim", dimension.value.toString())
         tag.put("Pos", NbtHelper.fromBlockPos(pos))
@@ -59,9 +59,9 @@ data class Home(
             )
         }
 
-        fun read(tag: CompoundTag): Home {
+        fun read(tag: NbtCompound): Home {
             val name = tag.getString("Name")
-            val dimension = RegistryKey.of(Registry.DIMENSION, Identifier(tag.getString("Dim")))
+            val dimension = RegistryKey.of(Registry.WORLD_KEY, Identifier(tag.getString("Dim")))
             val pos = NbtHelper.toBlockPos(tag.getCompound("Pos"))
             return Home(name, dimension, pos)
         }

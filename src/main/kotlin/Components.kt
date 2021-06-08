@@ -4,9 +4,9 @@ import dev.onyxstudios.cca.api.v3.component.ComponentKey
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistry
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer
+import dev.onyxstudios.cca.api.v3.entity.RespawnCopyStrategy
 import me.geek.tom.serverutils.homes.HomesComponentImpl
-import me.geek.tom.serverutils.sethome.HomesComponent
-import nerdhub.cardinal.components.api.util.RespawnCopyStrategy
+import me.geek.tom.serverutils.homes.HomesComponent
 import net.minecraft.util.Identifier
 
 class Components : EntityComponentInitializer {

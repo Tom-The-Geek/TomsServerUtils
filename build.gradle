@@ -1,26 +1,26 @@
-buildscript {
-	dependencies {
-		constraints {
-			["asm", "asm-util", "asm-tree", "asm-analysis"].forEach {
-				classpath("org.ow2.asm:$it") {
-					version { require("9.0") }
-					because("Fabric's TinyRemapper requires ASM 9")
-				}
-			}
-		}
-	}
-}
+//buildscript {
+//	dependencies {
+//		constraints {
+//			["asm", "asm-util", "asm-tree", "asm-analysis"].forEach {
+//				classpath("org.ow2.asm:$it") {
+//					version { require("9.0") }
+//					because("Fabric's TinyRemapper requires ASM 9")
+//				}
+//			}
+//		}
+//	}
+//}
 
 plugins {
-	id "fabric-loom" version "0.6.57"
+	id "fabric-loom" version "0.8.14"
 	id "maven-publish"
-	id "org.jetbrains.kotlin.jvm" version "1.4.10"
-	id "com.github.johnrengelman.shadow" version "6.1.0"
+	id "org.jetbrains.kotlin.jvm" version "1.4.32"
+	id "com.github.johnrengelman.shadow" version "7.0.0"
 	id "com.modrinth.minotaur" version "1.1.0"
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
 def ENV = System.getenv()
@@ -39,7 +39,7 @@ minecraft {
 
 compileKotlin {
     kotlinOptions {
-	    jvmTarget = "1.8"
+	    jvmTarget = "16"
 	}
 }
 
@@ -62,7 +62,7 @@ repositories {
 	}
 	maven {
 		name = "sonatype-oss"
-		url = "https://oss.sonatype.org/content/repositories/snapshots/"
+		url = "https://oss.sonatype.org/content/groups/public/"
 	}
 	maven {
 		name = "Ladysnake Libs"
@@ -110,9 +110,11 @@ dependencies {
 
 	shade "dev.vankka:MCDiscordReserializer:4.1.1-SNAPSHOT"
 	shade "dev.vankka:SimpleAST:2.2.4-SNAPSHOT"
-	modImplementation "net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT"
-	include "net.kyori:adventure-platform-fabric:4.0.0-SNAPSHOT"
-	include "ca.stellardrift:colonel:0.2"
+	modImplementation("net.kyori:adventure-platform-fabric:4.1.0-SNAPSHOT") {
+		exclude module: "colonel"
+	}
+	include "net.kyori:adventure-platform-fabric:4.1.0-SNAPSHOT"
+//	include "ca.stellardrift:colonel:0.2"
 	include "net.kyori:adventure-api:4.2.0"
 	include "net.kyori:adventure-platform-api:4.0.0-SNAPSHOT"
 	include "net.kyori:adventure-text-feature-pagination:4.0.0-SNAPSHOT"
@@ -125,12 +127,13 @@ dependencies {
 	shade "org.mozilla:rhino:1.7.13"
 
 	// server-translations
-	modImplementation "fr.catcore:server-translations-api:1.4.1"
-	include "fr.catcore:server-translations-api:1.4.1"
+	modImplementation "fr.catcore:server-translations-api:1.4.2+1.17"
+	include "fr.catcore:server-translations-api:1.4.2+1.17"
 
-	include "org.slf4j:slf4j-api:1.7.25"
-	implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.8.1"
-	include "org.apache.logging.log4j:log4j-slf4j-impl:2.8.1"
+	// Don't need slf4j anymore, MC includes it
+//	include "org.slf4j:slf4j-api:1.7.25"
+//	implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.8.1"
+//	include "org.apache.logging.log4j:log4j-slf4j-impl:2.8.1"
 }
 
 processResources {
@@ -212,8 +215,7 @@ task publishModrinth(type: TaskModrinthUpload, dependsOn: remapJar) {
 	projectId = "ul4zTWk4"
 	versionNumber = project.version
 	uploadFile = remapJar // This is the java jar task
-	addGameVersion("1.16.4")
-	addGameVersion("1.16.5")
+	addGameVersion("1.17-pre2")
 	addLoader("fabric")
 }
 
