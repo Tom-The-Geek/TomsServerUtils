@@ -95,8 +95,8 @@ dependencies {
 	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cardinal_components_version}"
 	include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cardinal_components_version}"
 
-	modImplementation "com.github.P03W:Aegis:2.1.0"
-	include "com.github.P03W:Aegis:2.1.0"
+	modImplementation "com.github.P03W:Aegis:3.0.0"
+	include "com.github.P03W:Aegis:3.0.0"
 
 	shade "dev.vankka:MCDiscordReserializer:4.1.1-SNAPSHOT"
 	shade "dev.vankka:SimpleAST:2.2.4-SNAPSHOT"
