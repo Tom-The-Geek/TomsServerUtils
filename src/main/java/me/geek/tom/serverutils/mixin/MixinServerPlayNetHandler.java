@@ -11,11 +11,11 @@ import static me.geek.tom.serverutils.ServerUtils2ElectricBoogalooKt.chat;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public abstract class MixinServerPlayNetHandler {
-    @Inject(method = "handleMessage", cancellable = true, at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Ljava/util/function/Function;Lnet/minecraft/network/MessageType;Ljava/util/UUID;)V"))
+    @Inject(method = "handleMessage", at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Ljava/util/function/Function;Lnet/minecraft/network/MessageType;Ljava/util/UUID;)V"
+    ))
     private void onChat(TextStream.Message message, CallbackInfo ci) {
-        if (!chat((ServerPlayNetworkHandler) (Object) this, message)) {
-            ci.cancel();
-        }
+        chat((ServerPlayNetworkHandler) (Object) this, message);
     }
 }

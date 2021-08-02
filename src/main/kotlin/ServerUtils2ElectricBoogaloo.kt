@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import me.geek.tom.serverutils.bot.BotConnection
 import me.geek.tom.serverutils.bot.loadBot
-import me.geek.tom.serverutils.chatfilter.ChatFilterManager
 import me.geek.tom.serverutils.commands.registerBroadcastCommand
 import me.geek.tom.serverutils.commands.registerHomesCommand
 import me.geek.tom.serverutils.crashreports.CrashReportHelper
@@ -17,7 +16,6 @@ import me.geek.tom.serverutils.ducks.IPlayerAccessor
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.network.MessageType
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.command.CommandManager
 import net.minecraft.server.command.ServerCommandSource
@@ -26,14 +24,10 @@ import net.minecraft.server.network.ServerPlayNetworkHandler
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
-import net.minecraft.util.Formatting
-import net.minecraft.util.Util
 import net.minecraft.util.crash.CrashReport
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.io.File
-import java.nio.file.Path
 
 class ServerUtils2ElectricBoogaloo : ModInitializer {
     override fun onInitialize() {
@@ -93,7 +87,6 @@ private var connection: BotConnection? = null
 private var crashHelper: CrashReportHelper? = null
 var homesConfig: HomesConfig? = null
 
-private val chatFilterManager = ChatFilterManager()
 
 var debugCommandSaveReport = true
 
@@ -116,10 +109,6 @@ fun starting(server: MinecraftServer) {
         connection?.connect(server)
         connection?.serverStarting(server) // this is inside the GlobalScope.launch block to ensure it is called after we have connected
     }
-    chatFilterManager.init(
-        FabricLoader.getInstance().configDir.resolve("serverutils"),
-        server
-    )
 }
 
 fun started(server: MinecraftServer) {
@@ -149,26 +138,8 @@ fun leave(player: ServerPlayerEntity) {
     connection?.onPlayerLeave(player)
 }
 
-fun chat(netHandler: ServerPlayNetworkHandler, message: TextStream.Message): Boolean {
+fun chat(netHandler: ServerPlayNetworkHandler, message: TextStream.Message) {
     val player = netHandler.player
-    val failed = chatFilterManager.onChatMessage(message.filtered)
-    val ok = failed.isEmpty()
-    if (!ok) {
-        val failedMessage = java.lang.String.join(", ", failed)
-        player.sendMessage(
-            TranslatableText("serverutils.chatfilter.flagged").formatted(Formatting.RED),
-            MessageType.SYSTEM, Util.NIL_UUID
-        )
-        player.sendMessage(
-            TranslatableText("serverutils.chatfilter.flagged.filters")
-                .append(failedMessage).formatted(Formatting.RED), MessageType.SYSTEM, Util.NIL_UUID
-        )
-    }
-    if (ok) {
-        val showHat = (player as IPlayerAccessor).serverutils_showHat()
-        connection?.onChatMessage(player.gameProfile, showHat, message.filtered)
-    }
-    return ok
+    val showHat = (player as IPlayerAccessor).serverutils_showHat()
+    connection?.onChatMessage(player.gameProfile, showHat, message.filtered)
 }
-
-val configDir: Path by lazy { FabricLoader.getInstance().configDir.resolve("serverutils") }

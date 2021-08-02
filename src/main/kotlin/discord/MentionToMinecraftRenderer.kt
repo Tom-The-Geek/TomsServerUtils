@@ -4,6 +4,7 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import dev.kord.cache.api.getEntry
 import dev.kord.cache.api.query
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.Kord
 import dev.kord.core.entity.Role
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.vankka.mcdiscordreserializer.renderer.implementation.DefaultMinecraftRenderer
@@ -18,7 +19,7 @@ class MentionToMinecraftRenderer(
     override fun appendChannelMention(component: Component, id: String): Component {
         return runBlocking {
             component.append(
-                Component.text("#${bot.kord.getChannel(Snowflake(id), EntitySupplyStrategy.cacheWithRestFallback)?.data?.name?.value}")
+                Component.text("#${bot.getKoin().get<Kord>().getChannel(Snowflake(id), EntitySupplyStrategy.cacheWithRestFallback)?.data?.name?.value}")
                     .color(BLURPLE)
                     .clickToCopy("Click to copy mention", "<#$id>")
             )
@@ -28,7 +29,7 @@ class MentionToMinecraftRenderer(
     override fun appendUserMention(component: Component, id: String): Component {
         return runBlocking {
             component.append(
-                Component.text("@${bot.kord.getUser(Snowflake(id))?.tag}")
+                Component.text("@${bot.getKoin().get<Kord>().getUser(Snowflake(id))?.tag}")
                     .color(BLURPLE)
                     .clickToCopy("Click to copy mention", "<@!$id>")
             )
@@ -43,7 +44,7 @@ class MentionToMinecraftRenderer(
                     "@${
                         // TODO: Improve by fetching the role from the guild to ensure that we get every valid role mention without relying on the cache
                         // Unless I find a better way, this is what we have to do
-                        bot.kord.cache.getEntry<Role>()?.query { Role::id eq snowflakeId }?.singleOrNull()?.name
+                        bot.getKoin().get<Kord>().cache.getEntry<Role>()?.query { Role::id eq snowflakeId }?.singleOrNull()?.name
                     }").color(BLURPLE)
                     .clickToCopy("Click to copy mention", "<@&$snowflakeId>")
             )

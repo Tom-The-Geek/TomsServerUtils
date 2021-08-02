@@ -79,17 +79,6 @@ repositories {
 	}
 }
 
-sourceSets {
-	scriptApi {
-		compileClasspath += main.compileClasspath
-	}
-
-	main {
-		compileClasspath += scriptApi.output
-		runtimeClasspath += scriptApi.output
-	}
-}
-
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
@@ -164,12 +153,12 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 jar {
 	from "LICENSE"
-	from sourceSets.main.output, sourceSets.scriptApi.output
+	from sourceSets.main.output
 }
 
 shadowJar {
 	from "LICENSE"
-	from sourceSets.main.output, sourceSets.scriptApi.output
+	from sourceSets.main.output
 
 	configurations = [ project.configurations.shade, project.configurations.modShade ]
 	classifier = "dev-all"
@@ -196,7 +185,9 @@ shadowJar {
 	relocate "net.time4j", relocPath + "net.time4j"
 	relocate "okhttp3", relocPath + "okhttp3"
 	relocate "okio", relocPath + "okio"
-	relocate "org.apache.commons", relocPath + "org.apache.commons"
+	relocate "org.apache.commons.lang3", relocPath + "org.apache.commons.lang3"
+	relocate "org.apache.commons.collections4", relocPath + "org.apache.commons.collections4"
+	relocate "org.apache.commons.text", relocPath + "org.apache.commons.text"
 	relocate "org.json", relocPath + "org.json"
 	relocate "org.koin", relocPath = "org.koin"
 	relocate "org.mozilla", relocPath + "org.mozilla"
