@@ -34,7 +34,7 @@ fun registerBroadcastCommand(dispatcher: CommandDispatcher<ServerCommandSource>)
 }
 
 private fun broadcastMessage(ctx: CommandContext<ServerCommandSource>, text: Text) {
-    val server = ctx.source.minecraftServer
+    val server = ctx.source.server
     server.playerManager.broadcastChatMessage(text, MessageType.CHAT, Util.NIL_UUID)
     broadcast(text)
 }
